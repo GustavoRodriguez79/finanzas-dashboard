@@ -1,0 +1,148 @@
+/* Navbar.css */
+/* Estilos de la barra de navegación principal */
+
+.navbar {
+  background-color: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Brand / Logo */
+.navbar-brand a {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+/* Links de navegación */
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 4px;
+  flex: 1;
+}
+
+.navbar-links a {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.navbar-links a:hover,
+.navbar-links a.active {
+  background-color: rgba(0, 230, 118, 0.1);
+  color: var(--primary);
+}
+
+/* Usuario */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.navbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+}
+
+.navbar-nombre {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Botón logout */
+.btn-logout {
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-logout:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Hamburguesa — solo mobile */
+.navbar-hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  margin-left: auto;
+}
+
+/* Menú mobile */
+.navbar-mobile {
+  display: none;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 20px;
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .navbar-links,
+  .navbar-user {
+    display: none;
+  }
+
+  .navbar-hamburger {
+    display: block;
+  }
+
+  .navbar-mobile {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 4px;
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .navbar-mobile a {
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    transition: var(--transition);
+  }
+
+  .navbar-mobile a:hover,
+  .navbar-mobile a.active {
+    background-color: rgba(0, 230, 118, 0.1);
+    color: var(--primary);
+  }
+
+  .navbar-mobile .btn-logout {
+    margin-top: 4px;
+    text-align: left;
+  }
+}
