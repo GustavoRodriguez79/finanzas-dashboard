@@ -1,0 +1,131 @@
+/* Presupuesto.css */
+/* Estilos específicos de la página de presupuesto */
+
+.presupuesto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* Card de presupuesto */
+.presupuesto-card {
+  background: var(--card);
+  border-radius: var(--radio);
+  padding: 20px;
+  border: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.presupuesto-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+
+.presupuesto-card.normal::before { background: var(--primary); }
+.presupuesto-card.advertencia::before { background: var(--warning); }
+.presupuesto-card.superado::before { background: var(--danger); }
+
+.presupuesto-card.normal { border-color: var(--border); }
+.presupuesto-card.advertencia { border-color: var(--warning); }
+.presupuesto-card.superado { border-color: var(--danger); }
+
+.presupuesto-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Header de la card */
+.presupuesto-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.presupuesto-categoria {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+/* Barra de progreso */
+.presupuesto-barra-container {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.presupuesto-barra {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  background: var(--primary);
+}
+
+.presupuesto-card.advertencia .presupuesto-barra {
+  background: var(--warning);
+}
+
+.presupuesto-card.superado .presupuesto-barra {
+  background: var(--danger);
+}
+
+/* Info */
+.presupuesto-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.presupuesto-porcentaje {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.presupuesto-card.advertencia .presupuesto-porcentaje {
+  color: var(--warning);
+}
+
+.presupuesto-card.superado .presupuesto-porcentaje {
+  color: var(--danger);
+}
+
+.presupuesto-montos {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Alerta */
+.presupuesto-alerta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.presupuesto-card.advertencia .presupuesto-alerta {
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--warning);
+}
+
+.presupuesto-card.superado .presupuesto-alerta {
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--danger);
+}
+
+/* Disponible */
+.presupuesto-disponible {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
