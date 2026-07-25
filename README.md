@@ -6,8 +6,30 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.137-009688?logo=fastapi)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791?logo=postgresql)
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)
 ![Estado](https://img.shields.io/badge/Estado-En%20desarrollo-yellow)
 
+---
+
+## 📸 Vista previa
+
+### Login
+![Login](docs/images/login.png)
+
+### Dashboard principal
+![Dashboard](docs/images/dashboard.png)
+
+### Ingresos
+![Ingresos](docs/images/ingresos.png)
+
+### Gastos
+![Gastos](docs/images/gastos.png)
+
+### Presupuesto
+![Presupuesto](docs/images/presupuesto.png)
+
+### Resumen anual
+![Resumen Anual](docs/images/resumen-anual.png)
 ---
 
 ## 🚀 Tecnologías
@@ -15,9 +37,9 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 - **Backend:** Python · FastAPI · uvicorn
 - **Base de datos:** PostgreSQL · psycopg2 · pool de conexiones
 - **Autenticación:** JWT · bcrypt · Google OAuth
-- **Frontend:** React · Vite · Axios · Recharts · React Router
+- **Frontend:** React 18 · Vite · Axios · Recharts · React Router
 - **Deploy:** Render (backend + DB) · Netlify (frontend)
-- **Otros:** python-dotenv · Pydantic · passlib
+- **Otros:** python-dotenv · Pydantic · passlib · ESLint
 
 ---
 
@@ -31,6 +53,7 @@ finanzas-dashboard/
 │   ├── models.py            # Modelos de datos y categorías
 │   ├── schemas.py           # Validaciones Pydantic
 │   ├── auth.py              # JWT, bcrypt y Google OAuth
+│   ├── requirements.txt     # Dependencias Python
 │   └── routes/
 │       ├── auth.py          # Registro, login, logout, Google
 │       ├── ingresos.py      # CRUD ingresos
@@ -38,11 +61,28 @@ finanzas-dashboard/
 │       ├── presupuesto.py   # Presupuesto mensual con alertas
 │       └── resumen.py       # Dashboard y resumen anual
 ├── frontend/
+│   ├── public/
 │   └── src/
-│       ├── components/      # Navbar, PrivateRoute, gráficos
-│       ├── pages/           # Login, Register, Dashboard, etc.
-│       ├── services/        # Axios + interceptores JWT
-│       └── context/         # AuthContext global
+│       ├── components/
+│       │   ├── charts/
+│       │   │   ├── GraficoTorta.jsx    # Gráfico donut por categoría
+│       │   │   └── GraficoBarras.jsx   # Comparativa ingresos/gastos
+│       │   ├── Navbar.jsx              # Navegación responsive
+│       │   └── PrivateRoute.jsx        # Protección de rutas
+│       ├── context/
+│       │   └── AuthContext.jsx         # Estado global de autenticación
+│       ├── pages/
+│       │   ├── Login.jsx               # Login con email o Google
+│       │   ├── Register.jsx            # Registro con email o Google
+│       │   ├── Dashboard.jsx           # Resumen mensual con gráficos
+│       │   ├── Ingresos.jsx            # CRUD ingresos
+│       │   ├── Gastos.jsx              # CRUD gastos
+│       │   ├── Presupuesto.jsx         # Presupuesto con alertas
+│       │   └── ResumenAnual.jsx        # Balance anual
+│       ├── services/
+│       │   └── api.js                  # Axios + interceptores JWT
+│       ├── App.jsx                     # Router y rutas
+│       └── main.jsx                    # Punto de entrada
 ├── docs/
 │   └── images/
 ├── .gitignore
@@ -154,7 +194,7 @@ CREATE TABLE refresh_tokens (
 | GET | `/gastos` | Listar gastos con filtros | ✅ |
 | POST | `/gastos` | Crear gasto | ✅ |
 | PUT | `/gastos/{id}` | Actualizar gasto | ✅ |
-| DELETE | `/gastos/{id}` | Anular gasto (no elimina) | ✅ |
+| DELETE | `/gastos/{id}` | Anular gasto — no elimina | ✅ |
 
 ### Presupuesto
 | Método | Ruta | Descripción | Auth |
@@ -230,15 +270,16 @@ flowchart TD
 
 ## ✨ Funcionalidades
 
-- Registro y login con email/contraseña o Google OAuth
+- Registro y login con email/contraseña o **Google OAuth**
 - Dashboard con resumen del mes: ingresos, gastos, balance y % ahorro
-- Gráficos de gastos por categoría y evolución mensual
-- Filtros por mes, año y categoría
-- Presupuesto mensual por categoría con alertas al 80%
-- Comparativa con el mes anterior
-- Proyección del gasto mensual
-- Resumen anual con detalle mes a mes
+- Gráfico donut de gastos por categoría
+- Gráfico de barras comparativo con el mes anterior
+- Filtros por mes, año y categoría en todas las páginas
+- Presupuesto mensual por categoría con **alertas visuales al 80%**
+- Proyección del gasto mensual basada en promedio diario
+- Resumen anual con evolución mes a mes y detalle por categoría
 - Historial inmutable — criterio bancario profesional
+- Interfaz responsive — funciona en mobile y desktop
 
 ---
 
@@ -282,19 +323,45 @@ GOOGLE_CLIENT_SECRET=tu_google_client_secret
 ENVIRONMENT=development
 ```
 
-### 4. Correr el servidor
+### 4. Crear la base de datos
+
+Ejecutar el SQL de la sección **Base de datos** en pgAdmin.
+
+### 5. Correr el backend
 
 ```bash
 cd backend
 uvicorn main:app --reload
 ```
 
+### 6. Configurar el frontend
+
+```bash
+cd frontend
+npm install
+```
+
+Crear `frontend/.env`:
+
+```
+VITE_API_URL=http://127.0.0.1:8000
+VITE_GOOGLE_CLIENT_ID=tu_google_client_id
+```
+
+### 7. Correr el frontend
+
+```bash
+npm run dev
+```
+
+Abrís `http://localhost:5173` en el navegador.
+
 ---
 
 ## 🌐 Deploy
 
-- **Backend:** [Render](https://render.com) — Python + PostgreSQL
-- **Frontend:** [Netlify](https://netlify.com) — React + Vite
+- **Backend + DB:** [Render](https://render.com) — Python + PostgreSQL gratuito
+- **Frontend:** [Netlify](https://netlify.com) — React + Vite gratuito
 
 ---
 
