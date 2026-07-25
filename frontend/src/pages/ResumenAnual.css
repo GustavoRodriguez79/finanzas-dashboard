@@ -1,0 +1,257 @@
+/* ResumenAnual.css */
+
+.resumen-anual {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Loading y error */
+.resumen-loading,
+.resumen-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  gap: 16px;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Header */
+.resumen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.resumen-header h1 {
+  font-size: 1.8rem;
+  color: var(--text);
+}
+
+.resumen-subtitle {
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.anio-selector {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Totales */
+.resumen-totales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.total-card {
+  background: var(--card);
+  border-radius: var(--radio);
+  padding: 24px;
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.total-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+
+.total-card.ingresos::before { background: var(--success); }
+.total-card.gastos::before { background: var(--danger); }
+.total-card.balance.positivo::before { background: var(--success); }
+.total-card.balance.negativo::before { background: var(--danger); }
+.total-card.ahorro::before { background: var(--warning); }
+
+.total-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-glow);
+}
+
+.total-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.total-valor {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.total-card.ingresos .total-valor { color: var(--success); }
+.total-card.gastos .total-valor { color: var(--danger); }
+.total-card.balance.positivo .total-valor { color: var(--success); }
+.total-card.balance.negativo .total-valor { color: var(--danger); }
+.total-card.ahorro .total-valor { color: var(--warning); }
+
+/* Destacados */
+.resumen-destacados {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.destacado-card {
+  background: var(--card);
+  border-radius: var(--radio);
+  padding: 20px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.destacado-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.destacado-mes {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.destacado-monto {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Gráfico card */
+.resumen-grafico-card {
+  background: var(--card);
+  border-radius: var(--radio);
+  padding: 24px;
+  border: 1px solid var(--border);
+}
+
+.resumen-grafico-card h2 {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+/* Bottom grid */
+.resumen-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Categorías tabla */
+.categorias-tabla {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.categoria-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.categoria-nombre {
+  flex: 1;
+  color: var(--text);
+}
+
+.categoria-porcentaje {
+  color: var(--text-secondary);
+  width: 50px;
+  text-align: center;
+}
+
+.categoria-monto {
+  color: var(--danger);
+  font-weight: 600;
+  width: 100px;
+  text-align: right;
+}
+
+/* Tabla mes a mes */
+.meses-tabla-container {
+  overflow-x: auto;
+}
+
+.meses-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.meses-tabla th {
+  text-align: left;
+  padding: 10px 14px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card-inner);
+}
+
+.meses-tabla td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.meses-tabla tbody tr:hover {
+  background: rgba(0, 230, 118, 0.04);
+}
+
+.monto-positivo { color: var(--success); font-weight: 600; }
+.monto-negativo { color: var(--danger); font-weight: 600; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .resumen-bottom,
+  .resumen-destacados {
+    grid-template-columns: 1fr;
+  }
+}
