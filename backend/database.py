@@ -23,19 +23,38 @@ def init_pool():
     """
     Inicializa el pool de conexiones al arrancar la app.
     Se llama una sola vez desde main.py en el evento startup.
+
+    Soporta dos modos:
+    - Producción (Render): usa DATABASE_URL si existe.
+    - Local: usa las variables sueltas DB_HOST, DB_PORT, etc.
     """
     global connection_pool
     try:
-        connection_pool = psycopg2.pool.ThreadedConnectionPool(
-            minconn=1,
-            maxconn=10,
-            host=os.getenv("DB_HOST"),
-            port=os.getenv("DB_PORT"),
-            dbname=os.getenv("DB_NAME"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD")
-        )
-        logger.info("Pool de conexiones iniciado correctamente")
+        database_url = os.getenv("DATABASE_URL")
+
+        if database_url:
+            if database_url.startswith("postgres://"):
+                database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+            connection_pool = psycopg2.pool.ThreadedConnectionPool(
+                minconn=1,
+                maxconn=10,
+                dsn=database_url,
+                sslmode="require"
+            )
+            logger.info("Pool de conexiones iniciado con DATABASE_URL (producción)")
+        else:
+            connection_pool = psycopg2.pool.ThreadedConnectionPool(
+                minconn=1,
+                maxconn=10,
+                host=os.getenv("DB_HOST"),
+                port=os.getenv("DB_PORT"),
+                dbname=os.getenv("DB_NAME"),
+                user=os.getenv("DB_USER"),
+                password=os.getenv("DB_PASSWORD")
+            )
+            logger.info("Pool de conexiones iniciado con variables locales")
+
     except Exception as e:
         logger.error(f"Error al iniciar el pool de conexiones: {e}")
         raise
