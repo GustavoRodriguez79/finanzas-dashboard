@@ -368,7 +368,8 @@ Abrís `http://localhost:5173` en el navegador.
 - **Backend + DB:** [Render](https://render.com) — Python + PostgreSQL
   - API: [https://finanzas-dashboard-backend.onrender.com](https://finanzas-dashboard-backend.onrender.com)
   - Docs interactiva: [https://finanzas-dashboard-backend.onrender.com/docs](https://finanzas-dashboard-backend.onrender.com/docs)
-- **Frontend:** [Netlify](https://netlify.com) — React + Vite *(próximamente)*
+- **Frontend:** [Netlify](https://netlify.com) — React + Vite
+  - Sitio: [https://finanzas-dashboard-gustavo.netlify.app](https://finanzas-dashboard-gustavo.netlify.app)
 
 > ⚠️ El backend usa el plan Free de Render: si no recibe tráfico por 15 minutos se "duerme", y el primer request puede tardar 30-50 segundos en responder mientras arranca de nuevo.
 
