@@ -7,7 +7,8 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791?logo=postgresql)
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)
-![Estado](https://img.shields.io/badge/Estado-En%20desarrollo-yellow)
+![Backend](https://img.shields.io/badge/Backend-Deployed-brightgreen)
+![Frontend](https://img.shields.io/badge/Frontend-En%20desarrollo-yellow)
 
 ---
 
@@ -209,7 +210,9 @@ CREATE TABLE refresh_tokens (
 | GET | `/resumen/mes` | Dashboard del mes actual | ✅ |
 | GET | `/resumen/anual` | Resumen de los 12 meses | ✅ |
 
-Documentación interactiva disponible en `http://127.0.0.1:8000/docs`
+Documentación interactiva disponible en:
+- Local: `http://127.0.0.1:8000/docs`
+- Producción: [https://finanzas-dashboard-backend.onrender.com/docs](https://finanzas-dashboard-backend.onrender.com/docs)
 
 ---
 
@@ -323,6 +326,8 @@ GOOGLE_CLIENT_SECRET=tu_google_client_secret
 ENVIRONMENT=development
 ```
 
+> En producción (Render), `database.py` prioriza una única variable `DATABASE_URL` en vez de las variables sueltas de conexión.
+
 ### 4. Crear la base de datos
 
 Ejecutar el SQL de la sección **Base de datos** en pgAdmin.
@@ -360,8 +365,12 @@ Abrís `http://localhost:5173` en el navegador.
 
 ## 🌐 Deploy
 
-- **Backend + DB:** [Render](https://render.com) — Python + PostgreSQL gratuito
-- **Frontend:** [Netlify](https://netlify.com) — React + Vite gratuito
+- **Backend + DB:** [Render](https://render.com) — Python + PostgreSQL
+  - API: [https://finanzas-dashboard-backend.onrender.com](https://finanzas-dashboard-backend.onrender.com)
+  - Docs interactiva: [https://finanzas-dashboard-backend.onrender.com/docs](https://finanzas-dashboard-backend.onrender.com/docs)
+- **Frontend:** [Netlify](https://netlify.com) — React + Vite *(próximamente)*
+
+> ⚠️ El backend usa el plan Free de Render: si no recibe tráfico por 15 minutos se "duerme", y el primer request puede tardar 30-50 segundos en responder mientras arranca de nuevo.
 
 ---
 
