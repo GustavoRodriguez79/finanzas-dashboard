@@ -51,7 +51,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",        # Vite dev server local
         "http://127.0.0.1:5173",
-        "https://finanzas-dashboard.netlify.app"  # URL de producción en Netlify
+        "https://finanzas-dashboard-gustavo.netlify.app"  # URL de producción en Netlify
     ],
     allow_credentials=True,            # Necesario para enviar cookies/headers de auth
     allow_methods=["*"],
