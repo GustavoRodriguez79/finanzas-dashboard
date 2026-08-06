@@ -231,19 +231,25 @@ def verify_refresh_token_db(token: str) -> int:
 
 async def verify_google_token(token: str) -> dict:
     """
-    Verifica el token de Google y retorna los datos del usuario.
-    Usa el endpoint oficial de Google para validar el token.
+    Verifica el ID Token de Google (JWT) y retorna los datos del usuario.
+    El token viene del flujo de Google Identity Services (@react-oauth/google),
+    que entrega un ID Token, no un Access Token — se valida localmente
+    con la clave pública de Google, sin necesidad de llamar a su API.
     """
-    import httpx
-    async with httpx.AsyncClient() as client:
-        respuesta = await client.get(
-            "https://www.googleapis.com/oauth2/v3/userinfo",
-            headers={"Authorization": f"Bearer {token}"}
+    from google.oauth2 import id_token as google_id_token
+    from google.auth.transport import requests as google_requests
+
+    try:
+        google_data = google_id_token.verify_oauth2_token(
+            token,
+            google_requests.Request(),
+            os.getenv("GOOGLE_CLIENT_ID")
         )
-        if respuesta.status_code != 200:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token de Google inválido"
-            )
-        return respuesta.json()
-        # Retorna: email, name, picture, sub (google_id)
+        return google_data
+        # Contiene: email, name, picture, sub (google_id)
+    except ValueError as e:
+        logger.error(f"Token de Google inválido: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token de Google inválido"
+        )
