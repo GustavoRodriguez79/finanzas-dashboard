@@ -8,7 +8,7 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)
 ![Backend](https://img.shields.io/badge/Backend-Deployed-brightgreen)
-![Frontend](https://img.shields.io/badge/Frontend-En%20desarrollo-yellow)
+![Frontend](https://img.shields.io/badge/Frontend-Deployed-brightgreen)
 
 ---
 
@@ -40,7 +40,7 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 - **Autenticación:** JWT · bcrypt · Google OAuth
 - **Frontend:** React 18 · Vite · Axios · Recharts · React Router
 - **Deploy:** Render (backend + DB) · Netlify (frontend)
-- **Otros:** python-dotenv · Pydantic · passlib · ESLint
+- **Otros:** python-dotenv · Pydantic · passlib · ESLint · google-auth
 
 ---
 
@@ -268,6 +268,7 @@ flowchart TD
 - Gastos con **anulación** en vez de eliminación — historial inmutable
 - Pool de conexiones con límite máximo — protección contra sobrecarga
 - CORS configurado por dominio específico en producción
+- Login con Google validado mediante verificación de ID Token contra las claves públicas de Google (librería `google-auth`)
 
 ---
 
@@ -326,57 +327,4 @@ GOOGLE_CLIENT_SECRET=tu_google_client_secret
 ENVIRONMENT=development
 ```
 
-> En producción (Render), `database.py` prioriza una única variable `DATABASE_URL` en vez de las variables sueltas de conexión.
-
-### 4. Crear la base de datos
-
-Ejecutar el SQL de la sección **Base de datos** en pgAdmin.
-
-### 5. Correr el backend
-
-```bash
-cd backend
-uvicorn main:app --reload
-```
-
-### 6. Configurar el frontend
-
-```bash
-cd frontend
-npm install
-```
-
-Crear `frontend/.env`:
-
-```
-VITE_API_URL=http://127.0.0.1:8000
-VITE_GOOGLE_CLIENT_ID=tu_google_client_id
-```
-
-### 7. Correr el frontend
-
-```bash
-npm run dev
-```
-
-Abrís `http://localhost:5173` en el navegador.
-
----
-
-## 🌐 Deploy
-
-- **Backend + DB:** [Render](https://render.com) — Python + PostgreSQL
-  - API: [https://finanzas-dashboard-backend.onrender.com](https://finanzas-dashboard-backend.onrender.com)
-  - Docs interactiva: [https://finanzas-dashboard-backend.onrender.com/docs](https://finanzas-dashboard-backend.onrender.com/docs)
-- **Frontend:** [Netlify](https://netlify.com) — React + Vite
-  - Sitio: [https://finanzas-dashboard-gustavo.netlify.app](https://finanzas-dashboard-gustavo.netlify.app)
-
-> ⚠️ El backend usa el plan Free de Render: si no recibe tráfico por 15 minutos se "duerme", y el primer request puede tardar 30-50 segundos en responder mientras arranca de nuevo.
-
----
-
-## 👤 Autor
-
-**Gustavo Ariel Rodriguez**
-Tecnicatura Universitaria en Programación — UTN San Rafael
-[GitHub](https://github.com/GustavoRodriguez79) · [LinkedIn](https://www.linkedin.com/in/gustavo-ariel-rodr%C3%ADguez-fornes-36a899370/) · [garodrifornes79@gmail.com](mailto:garodrifornes79@gmail.com)
+> En producción (Render), `database.py` prioriza una única variable
