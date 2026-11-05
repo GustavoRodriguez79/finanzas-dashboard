@@ -5,6 +5,7 @@
 import { useState, useEffect } from "react";
 import { ingresosService } from "../services/api";
 import "./Transacciones.css";
+import { descargarCSV } from "../utils/exportarCSV";
 
 const CATEGORIAS = ["Sueldo", "Freelance", "Inversiones", "Alquiler", "Otros"];
 
@@ -88,6 +89,21 @@ function Ingresos() {
     }
   };
 
+  const handleExportarCSV = () => {
+    const mes = String(filtroMes).padStart(2, "0");
+    descargarCSV(
+      `ingresos-${mes}-${filtroAnio}.csv`,
+      ["Fecha", "Descripción", "Categoría", "Recurrente", "Monto"],
+      ingresos.map((i) => [
+        i.fecha,
+        i.descripcion || "",
+        i.categoria,
+        i.recurrente ? "Sí" : "No",
+        i.monto.toFixed(2).replace(".", ",")
+      ])
+    );
+  };
+
   const totalMes = ingresos.reduce((acc, i) => acc + i.monto, 0);
 
   return (
@@ -124,6 +140,13 @@ function Ingresos() {
             <option key={a} value={a}>{a}</option>
           ))}
         </select>
+        <button
+          className="btn-exportar"
+          onClick={handleExportarCSV}
+          disabled={cargando || ingresos.length === 0}
+        >
+          📥 Exportar CSV
+        </button>
       </div>
 
       {/* Formulario nuevo ingreso */}
