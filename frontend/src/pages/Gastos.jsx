@@ -5,6 +5,7 @@
 import { useState, useEffect } from "react";
 import { gastosService } from "../services/api";
 import "./Transacciones.css";
+import { descargarCSV } from "../utils/exportarCSV";
 
 const CATEGORIAS = [
   "Vivienda", "Alimentación", "Transporte", "Salud",
@@ -92,6 +93,21 @@ function Gastos() {
     }
   };
 
+  const handleExportarCSV = () => {
+    const mes = String(filtroMes).padStart(2, "0");
+    descargarCSV(
+      `gastos-${mes}-${filtroAnio}.csv`,
+      ["Fecha", "Descripción", "Categoría", "Subcategoría", "Monto"],
+      gastos.map((g) => [
+        g.fecha,
+        g.descripcion || "",
+        g.categoria,
+        g.subcategoria || "",
+        g.monto.toFixed(2).replace(".", ",")
+      ])
+    );
+  };
+
   const totalMes = gastos.reduce((acc, g) => acc + g.monto, 0);
 
   return (
@@ -137,6 +153,13 @@ function Gastos() {
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
+        <button
+          className="btn-exportar"
+          onClick={handleExportarCSV}
+          disabled={cargando || gastos.length === 0}
+        >
+          📥 Exportar CSV
+        </button>
       </div>
 
       {/* Formulario */}
