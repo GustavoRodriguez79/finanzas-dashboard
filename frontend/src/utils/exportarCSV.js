@@ -22,8 +22,8 @@ export function descargarCSV(nombreArchivo, encabezados, filas) {
     fila.map((celda) => escapar(sanitizar(celda))).join(SEPARADOR)
   );
 
-  // El BOM UTF-8 (﻿) evita que Excel rompa tildes y la ñ.
-  const blob = new Blob(["﻿" + lineas.join("\r\n")], {
+  // El BOM UTF-8 evita que Excel rompa tildes y la ñ.
+  const blob = new Blob(["\uFEFF" + lineas.join("\r\n")], {
     type: "text/csv;charset=utf-8;"
   });
 
