@@ -21,3 +21,12 @@ dist/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Documentación interna del agente — no subir a GitHub
+docs/CLAUDE.md
+docs/PROMPT-MAESTRO.md
+
+# Variables de entorno reales
+.env
+backend/.env
+frontend/.env
