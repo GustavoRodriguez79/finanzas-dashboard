@@ -39,7 +39,7 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 - **Base de datos:** PostgreSQL · psycopg2 · pool de conexiones
 - **Autenticación:** JWT · bcrypt · Google OAuth
 - **Frontend:** React 18 · Vite · Axios · Recharts · React Router
-- **Deploy:** Render (backend + DB) · Netlify (frontend)
+- **Deploy:** Railway (backend) · Supabase (PostgreSQL) · Netlify (frontend)
 - **Otros:** python-dotenv · Pydantic · passlib · ESLint · google-auth
 
 ---
@@ -212,7 +212,7 @@ CREATE TABLE refresh_tokens (
 
 Documentación interactiva disponible en:
 - Local: `http://127.0.0.1:8000/docs`
-- Producción: [https://finanzas-dashboard-backend.onrender.com/docs](https://finanzas-dashboard-backend.onrender.com/docs)
+- Producción: [https://tu-servicio.up.railway.app/docs](https://tu-servicio.up.railway.app/docs)
 
 ---
 
@@ -327,7 +327,7 @@ GOOGLE_CLIENT_SECRET=tu_google_client_secret
 ENVIRONMENT=development
 ```
 
-> En producción (Render), `database.py` prioriza una única variable `DATABASE_URL` en vez de las variables sueltas de conexión.
+> En producción (Railway), `database.py` prioriza una única variable `DATABASE_URL` en vez de las variables sueltas de conexión.
 >
 > Las credenciales de Google OAuth se generan en [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials, como cliente de tipo "Aplicación web", agregando los orígenes de JavaScript autorizados (no requiere URIs de redirección, ya que el frontend usa el flujo de Google Identity Services vía popup).
 
@@ -368,13 +368,14 @@ Abrís `http://localhost:5173` en el navegador.
 
 ## 🌐 Deploy
 
-- **Backend + DB:** [Render](https://render.com) — Python + PostgreSQL
-  - API: [https://finanzas-dashboard-backend.onrender.com](https://finanzas-dashboard-backend.onrender.com)
-  - Docs interactiva: [https://finanzas-dashboard-backend.onrender.com/docs](https://finanzas-dashboard-backend.onrender.com/docs)
+- **Backend:** [Railway](https://railway.com) — Python + FastAPI
+  - API: [https://tu-servicio.up.railway.app](https://tu-servicio.up.railway.app)
+  - Docs interactiva: [https://tu-servicio.up.railway.app/docs](https://tu-servicio.up.railway.app/docs)
+- **Base de datos:** [Supabase](https://supabase.com) — PostgreSQL
 - **Frontend:** [Netlify](https://netlify.com) — React + Vite
   - Sitio: [https://finanzas-dashboard-gustavo.netlify.app](https://finanzas-dashboard-gustavo.netlify.app)
 
-> ⚠️ El backend usa el plan Free de Render: si no recibe tráfico por 15 minutos se "duerme", y el primer request puede tardar 30-50 segundos en responder mientras arranca de nuevo.
+> ℹ️ La URL de Railway (`tu-servicio.up.railway.app`) es un placeholder hasta completar el despliegue del servicio.
 >
 > ✅ Login con Google OAuth verificado y funcionando en producción.
 
