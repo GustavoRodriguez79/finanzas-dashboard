@@ -1,0 +1,18 @@
+# Configuración de despliegue en Railway.
+# Requiere en el servicio: Root Directory = backend
+# y Config as Code path = /railway.toml (el archivo vive en la raíz del repo).
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+# Railway inyecta $PORT. Escuchar en 0.0.0.0 es obligatorio para que sea accesible.
+startCommand = "uvicorn main:app --host 0.0.0.0 --port $PORT"
+
+# GET / responde 200 sin tocar la DB, ideal para el health check.
+healthcheckPath = "/"
+healthcheckTimeout = 100
+
+# Si el proceso cae (ej: DB momentáneamente caída), reintenta unas veces.
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
