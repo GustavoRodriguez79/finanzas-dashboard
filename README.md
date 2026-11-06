@@ -15,22 +15,29 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 ## 📸 Vista previa
 
 ### Login
+
 ![Login](docs/images/login.png)
 
 ### Dashboard principal
+
 ![Dashboard](docs/images/dashboard.png)
 
 ### Ingresos
+
 ![Ingresos](docs/images/ingresos.png)
 
 ### Gastos
+
 ![Gastos](docs/images/gastos.png)
 
 ### Presupuesto
+
 ![Presupuesto](docs/images/presupuesto.png)
 
 ### Resumen anual
+
 ![Resumen Anual](docs/images/resumen-anual.png)
+
 ---
 
 ## 🚀 Tecnologías
@@ -54,13 +61,15 @@ finanzas-dashboard/
 │   ├── models.py            # Modelos de datos y categorías
 │   ├── schemas.py           # Validaciones Pydantic
 │   ├── auth.py              # JWT, bcrypt y Google OAuth
+│   ├── init.sql             # Creación de tablas
 │   ├── requirements.txt     # Dependencias Python
 │   └── routes/
 │       ├── auth.py          # Registro, login, logout, Google
 │       ├── ingresos.py      # CRUD ingresos
 │       ├── gastos.py        # CRUD gastos con anulación bancaria
 │       ├── presupuesto.py   # Presupuesto mensual con alertas
-│       └── resumen.py       # Dashboard y resumen anual
+│       ├── resumen.py       # Dashboard y resumen anual
+│       └── ahorros_usd.py   # CRUD ahorros en USD
 ├── frontend/
 │   ├── public/
 │   └── src/
@@ -68,10 +77,12 @@ finanzas-dashboard/
 │       │   ├── charts/
 │       │   │   ├── GraficoTorta.jsx    # Gráfico donut por categoría
 │       │   │   └── GraficoBarras.jsx   # Comparativa ingresos/gastos
-│       │   ├── Navbar.jsx              # Navegación responsive
+│       │   ├── Sidebar.jsx             # Navegación lateral fija con íconos
+│       │   ├── Topbar.jsx              # Barra superior con título y toggle de tema
 │       │   └── PrivateRoute.jsx        # Protección de rutas
 │       ├── context/
-│       │   └── AuthContext.jsx         # Estado global de autenticación
+│       │   ├── AuthContext.jsx         # Estado global de autenticación
+│       │   └── ThemeContext.jsx        # Estado global de tema oscuro/claro
 │       ├── pages/
 │       │   ├── Login.jsx               # Login con email o Google
 │       │   ├── Register.jsx            # Registro con email o Google
@@ -79,10 +90,11 @@ finanzas-dashboard/
 │       │   ├── Ingresos.jsx            # CRUD ingresos
 │       │   ├── Gastos.jsx              # CRUD gastos
 │       │   ├── Presupuesto.jsx         # Presupuesto con alertas
-│       │   └── ResumenAnual.jsx        # Balance anual
+│       │   ├── ResumenAnual.jsx        # Balance anual
+│       │   └── AhorrosUSD.jsx          # CRUD ahorros en dólares
 │       ├── services/
 │       │   └── api.js                  # Axios + interceptores JWT
-│       ├── App.jsx                     # Router y rutas
+│       ├── App.jsx                     # Router, rutas y AppShell
 │       └── main.jsx                    # Punto de entrada
 ├── docs/
 │   └── images/
@@ -165,6 +177,17 @@ CREATE TABLE refresh_tokens (
     expira_en TIMESTAMP NOT NULL,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Ahorros en USD
+CREATE TABLE ahorros_usd (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('depósito', 'retiro', 'ajuste')),
+    monto DECIMAL(14,2) NOT NULL CHECK (monto > 0),
+    descripcion TEXT,
+    fecha DATE NOT NULL DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
 ---
@@ -172,45 +195,60 @@ CREATE TABLE refresh_tokens (
 ## 🔌 Endpoints
 
 ### Autenticación
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
-| POST | `/auth/register` | Registro con email y contraseña | ❌ |
-| POST | `/auth/login` | Login → JWT + refresh token | ❌ |
-| POST | `/auth/google` | Login con Google OAuth | ❌ |
-| POST | `/auth/refresh` | Renovar access token | ❌ |
-| POST | `/auth/logout` | Cerrar sesión | ✅ |
-| GET | `/auth/me` | Datos del usuario actual | ✅ |
+
+| Método | Ruta             | Descripción                     | Auth |
+| ------ | ---------------- | ------------------------------- | ---- |
+| POST   | `/auth/register` | Registro con email y contraseña | ❌   |
+| POST   | `/auth/login`    | Login → JWT + refresh token     | ❌   |
+| POST   | `/auth/google`   | Login con Google OAuth          | ❌   |
+| POST   | `/auth/refresh`  | Renovar access token            | ❌   |
+| POST   | `/auth/logout`   | Cerrar sesión                   | ✅   |
+| GET    | `/auth/me`       | Datos del usuario actual        | ✅   |
 
 ### Ingresos
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
-| GET | `/ingresos` | Listar ingresos con filtros | ✅ |
-| POST | `/ingresos` | Crear ingreso | ✅ |
-| PUT | `/ingresos/{id}` | Actualizar ingreso | ✅ |
-| DELETE | `/ingresos/{id}` | Eliminar ingreso | ✅ |
+
+| Método | Ruta             | Descripción                 | Auth |
+| ------ | ---------------- | --------------------------- | ---- |
+| GET    | `/ingresos`      | Listar ingresos con filtros | ✅   |
+| POST   | `/ingresos`      | Crear ingreso               | ✅   |
+| PUT    | `/ingresos/{id}` | Actualizar ingreso          | ✅   |
+| DELETE | `/ingresos/{id}` | Eliminar ingreso            | ✅   |
 
 ### Gastos
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
-| GET | `/gastos` | Listar gastos con filtros | ✅ |
-| POST | `/gastos` | Crear gasto | ✅ |
-| PUT | `/gastos/{id}` | Actualizar gasto | ✅ |
-| DELETE | `/gastos/{id}` | Anular gasto — no elimina | ✅ |
+
+| Método | Ruta           | Descripción               | Auth |
+| ------ | -------------- | ------------------------- | ---- |
+| GET    | `/gastos`      | Listar gastos con filtros | ✅   |
+| POST   | `/gastos`      | Crear gasto               | ✅   |
+| PUT    | `/gastos/{id}` | Actualizar gasto          | ✅   |
+| DELETE | `/gastos/{id}` | Anular gasto — no elimina | ✅   |
 
 ### Presupuesto
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
-| GET | `/presupuesto` | Ver presupuestos con alertas | ✅ |
-| POST | `/presupuesto` | Crear o actualizar presupuesto | ✅ |
-| DELETE | `/presupuesto/{id}` | Eliminar presupuesto | ✅ |
+
+| Método | Ruta                | Descripción                    | Auth |
+| ------ | ------------------- | ------------------------------ | ---- |
+| GET    | `/presupuesto`      | Ver presupuestos con alertas   | ✅   |
+| POST   | `/presupuesto`      | Crear o actualizar presupuesto | ✅   |
+| DELETE | `/presupuesto/{id}` | Eliminar presupuesto           | ✅   |
 
 ### Resumen
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
-| GET | `/resumen/mes` | Dashboard del mes actual | ✅ |
-| GET | `/resumen/anual` | Resumen de los 12 meses | ✅ |
+
+| Método | Ruta             | Descripción              | Auth |
+| ------ | ---------------- | ------------------------ | ---- |
+| GET    | `/resumen/mes`   | Dashboard del mes actual | ✅   |
+| GET    | `/resumen/anual` | Resumen de los 12 meses  | ✅   |
+
+### Ahorros USD
+
+| Método | Ruta                | Descripción                                   | Auth |
+| ------ | ------------------- | --------------------------------------------- | ---- |
+| GET    | `/ahorros-usd`      | Balance y listado de movimientos              | ✅   |
+| POST   | `/ahorros-usd`      | Registrar movimiento (depósito/retiro/ajuste) | ✅   |
+| PUT    | `/ahorros-usd/{id}` | Editar movimiento                             | ✅   |
+| DELETE | `/ahorros-usd/{id}` | Eliminar movimiento                           | ✅   |
 
 Documentación interactiva disponible en:
+
 - Local: `http://127.0.0.1:8000/docs`
 - Producción: [https://finanzas-dashboard-production.up.railway.app/docs](https://finanzas-dashboard-production.up.railway.app/docs)
 
@@ -225,6 +263,8 @@ flowchart TD
         B["Dashboard - Graficos y resumen"]
         C["Ingresos/Gastos - CRUD"]
         D["Presupuesto - Alertas"]
+        E2["Ahorros USD - CRUD"]
+        UI["Sidebar + Topbar + ThemeContext"]
     end
 
     subgraph API["Backend - FastAPI + Python"]
@@ -240,21 +280,23 @@ flowchart TD
         K["gastos - anulacion bancaria"]
         L["presupuestos - alertas 80 porciento"]
         M["refresh_tokens - seguridad"]
+        N["ahorros_usd - balance en dolares"]
     end
 
-    A & B & C & D <-->|HTTP JSON + JWT| F
+    A & B & C & D & E2 <-->|HTTP JSON + JWT| F
+    UI --> A & B & C & D & E2
     E --> F
     G --> F
     H --> F
-    F -->|SQL| I & J & K & L & M
+    F -->|SQL| I & J & K & L & M & N
 
     classDef frontend fill:#1a3a5c,stroke:#38bdf8,color:#e2e8f0
     classDef backend fill:#1a3a2a,stroke:#00E676,color:#e2e8f0
     classDef database fill:#3a1a1a,stroke:#f87171,color:#e2e8f0
 
-    class A,B,C,D frontend
+    class A,B,C,D,E2,UI frontend
     class E,F,G,H backend
-    class I,J,K,L,M database
+    class I,J,K,L,M,N database
 ```
 
 ---
@@ -275,13 +317,17 @@ flowchart TD
 ## ✨ Funcionalidades
 
 - Registro y login con email/contraseña o **Google OAuth**
+- Tema oscuro/claro con toggle persistente en `localStorage`
+- Sidebar fijo con íconos + Topbar por página
 - Dashboard con resumen del mes: ingresos, gastos, balance y % ahorro
+- Cards con gradientes visuales por tipo de métrica
 - Gráfico donut de gastos por categoría
 - Gráfico de barras comparativo con el mes anterior
 - Filtros por mes, año y categoría en todas las páginas
 - Presupuesto mensual por categoría con **alertas visuales al 80%**
 - Proyección del gasto mensual basada en promedio diario
 - Resumen anual con evolución mes a mes y detalle por categoría
+- Seguimiento de ahorros en dólares con balance acumulado
 - Historial inmutable — criterio bancario profesional
 - Interfaz responsive — funciona en mobile y desktop
 
@@ -329,11 +375,11 @@ ENVIRONMENT=development
 
 > En producción (Railway), `database.py` prioriza una única variable `DATABASE_URL` en vez de las variables sueltas de conexión.
 >
-> Las credenciales de Google OAuth se generan en [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials, como cliente de tipo "Aplicación web", agregando los orígenes de JavaScript autorizados (no requiere URIs de redirección, ya que el frontend usa el flujo de Google Identity Services vía popup).
+> Las credenciales de Google OAuth se generan en [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials, como cliente de tipo "Aplicación web", agregando los orígenes de JavaScript autorizados.
 
 ### 4. Crear la base de datos
 
-Ejecutar el SQL de la sección **Base de datos** en pgAdmin.
+Ejecutar `backend/init.sql` en Supabase o pgAdmin.
 
 ### 5. Correr el backend
 
@@ -374,10 +420,6 @@ Abrís `http://localhost:5173` en el navegador.
 - **Base de datos:** [Supabase](https://supabase.com) — PostgreSQL
 - **Frontend:** [Netlify](https://netlify.com) — React + Vite
   - Sitio: [https://finanzas-dashboard-gustavo.netlify.app](https://finanzas-dashboard-gustavo.netlify.app)
-
-> ℹ️ La URL de Railway (`finanzas-dashboard-production.up.railway.app`) es un placeholder hasta completar el despliegue del servicio.
->
-> ✅ Login con Google OAuth verificado y funcionando en producción.
 
 ---
 
