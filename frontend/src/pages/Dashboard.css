@@ -3,13 +3,12 @@
 .dashboard {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 32px 20px;
+  padding: 28px 24px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
 }
 
-/* Loading */
 .dashboard-loading,
 .dashboard-error {
   display: flex;
@@ -31,12 +30,14 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .btn-retry {
   background: var(--primary);
-  color: #0F172A;
+  color: #0f172a;
   border: none;
   border-radius: 8px;
   padding: 10px 24px;
@@ -44,23 +45,24 @@
   cursor: pointer;
 }
 
-/* Header */
 .dashboard-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
 }
 
 .dashboard-header h1 {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   color: var(--text);
+  font-weight: 800;
 }
 
 .dashboard-subtitle {
   color: var(--text-secondary);
   margin-top: 4px;
+  font-size: 0.9rem;
 }
 
 .periodo-selector {
@@ -70,15 +72,21 @@
 
 .periodo-selector select {
   background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
   color: var(--text);
-  padding: 8px 12px;
-  font-size: 0.9rem;
+  padding: 8px 14px;
+  font-size: 0.88rem;
   cursor: pointer;
+  transition: var(--transition);
 }
 
-/* Cards métricas */
+.periodo-selector select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* ─── Metric cards con gradiente ─── */
 .dashboard-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -86,60 +94,79 @@
 }
 
 .metric-card {
-  background: var(--card);
   border-radius: var(--radio);
-  padding: 24px;
-  border: 2px solid transparent;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   position: relative;
   overflow: hidden;
-  transition: var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+  color: #fff;
+  cursor: default;
 }
 
-.metric-card::before {
-  content: '';
+.metric-card.ingresos {
+  background: var(--grad-ingresos);
+}
+.metric-card.gastos {
+  background: var(--grad-gastos);
+}
+.metric-card.balance {
+  background: var(--grad-balance);
+}
+.metric-card.ahorro {
+  background: var(--grad-ahorro);
+}
+
+/* Balance negativo: degradado rojo, para conservar la señal que antes daba el color del valor */
+.metric-card.balance.negativo {
+  background: var(--grad-gastos);
+}
+
+.metric-card::after {
+  content: attr(data-icon);
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.4rem;
+  opacity: 0.25;
 }
-
-.metric-card.ingresos::before { background: #00E676; }
-.metric-card.gastos::before { background: #f87171; }
-.metric-card.balance.positivo::before { background: #00E676; }
-.metric-card.balance.negativo::before { background: #f87171; }
-.metric-card.ahorro::before { background: #fbbf24; }
 
 .metric-card:hover {
   transform: translateY(-4px);
-  border-color: var(--primary);
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 }
 
 .metric-label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  opacity: 0.85;
 }
 
 .metric-valor {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
 }
 
-.metric-card.gastos .metric-valor { color: var(--danger); }
-.metric-card.balance.positivo .metric-valor { color: var(--success); }
-.metric-card.balance.negativo .metric-valor { color: var(--danger); }
-.metric-card.ahorro .metric-valor { color: var(--warning); }
+.metric-sub {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
 
-/* Alertas */
+/* ─── Alertas ─── */
 .dashboard-alertas h2 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--warning);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  font-weight: 700;
 }
 
 .alertas-grid {
@@ -156,15 +183,32 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  box-shadow: var(--shadow-card);
 }
 
-.alerta-card.advertencia { border-color: var(--warning); }
-.alerta-card.superado { border-color: var(--danger); }
+.alerta-card.advertencia {
+  border-color: var(--warning);
+}
+.alerta-card.superado {
+  border-color: var(--danger);
+}
 
-.alerta-categoria { font-weight: 700; }
-.alerta-porcentaje { font-size: 1.4rem; font-weight: 700; color: var(--warning); }
-.alerta-card.superado .alerta-porcentaje { color: var(--danger); }
-.alerta-detalle { font-size: 0.82rem; color: var(--text-secondary); }
+.alerta-categoria {
+  font-weight: 700;
+  color: var(--text);
+}
+.alerta-porcentaje {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--warning);
+}
+.alerta-card.superado .alerta-porcentaje {
+  color: var(--danger);
+}
+.alerta-detalle {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
 
 .alerta-barra {
   height: 6px;
@@ -173,17 +217,17 @@
   overflow: hidden;
   margin-top: 4px;
 }
-
 .alerta-progreso {
   height: 100%;
   background: var(--warning);
   border-radius: 3px;
   transition: width 0.5s ease;
 }
+.alerta-card.superado .alerta-progreso {
+  background: var(--danger);
+}
 
-.alerta-card.superado .alerta-progreso { background: var(--danger); }
-
-/* Gráficos */
+/* ─── Gráficos ─── */
 .dashboard-graficos {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -193,17 +237,21 @@
 .grafico-card {
   background: var(--card);
   border-radius: var(--radio);
-  padding: 24px;
+  padding: 22px;
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
 
 .grafico-card h2 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-/* Extra cards */
+/* ─── Extra cards ─── */
 .dashboard-extra {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -213,40 +261,48 @@
 .extra-card {
   background: var(--card);
   border-radius: var(--radio);
-  padding: 24px;
+  padding: 20px 22px;
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .extra-label {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.8px;
+  font-weight: 700;
 }
 
 .extra-valor {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--primary);
 }
-
 .extra-sub {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
   .dashboard-graficos,
   .dashboard-extra {
     grid-template-columns: 1fr;
   }
+}
 
+@media (max-width: 600px) {
+  .dashboard {
+    padding: 16px 14px;
+  }
+  .metric-valor {
+    font-size: 1.5rem;
+  }
   .dashboard-header {
     flex-direction: column;
-    align-items: flex-start;
   }
 }
