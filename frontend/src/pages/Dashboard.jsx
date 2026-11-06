@@ -97,7 +97,7 @@ function Dashboard() {
 
       {/* Cards de métricas principales */}
       <div className="dashboard-cards">
-        <div className="metric-card ingresos">
+        <div className="metric-card ingresos" data-icon="💰">
           <span className="metric-label">💰 Ingresos</span>
           <span className="metric-valor">
             ${resumen?.total_ingresos?.toLocaleString("es-AR", {
@@ -105,7 +105,7 @@ function Dashboard() {
             })}
           </span>
         </div>
-        <div className="metric-card gastos">
+        <div className="metric-card gastos" data-icon="💸">
           <span className="metric-label">💸 Gastos</span>
           <span className="metric-valor">
             ${resumen?.total_gastos?.toLocaleString("es-AR", {
@@ -113,7 +113,10 @@ function Dashboard() {
             })}
           </span>
         </div>
-        <div className={`metric-card balance ${resumen?.balance >= 0 ? "positivo" : "negativo"}`}>
+        <div
+          className={`metric-card balance ${resumen?.balance >= 0 ? "positivo" : "negativo"}`}
+          data-icon="⚖️"
+        >
           <span className="metric-label">⚖️ Balance</span>
           <span className="metric-valor">
             ${resumen?.balance?.toLocaleString("es-AR", {
@@ -121,7 +124,7 @@ function Dashboard() {
             })}
           </span>
         </div>
-        <div className="metric-card ahorro">
+        <div className="metric-card ahorro" data-icon="🎯">
           <span className="metric-label">🎯 Ahorro</span>
           <span className="metric-valor">
             {resumen?.porcentaje_ahorro}%
