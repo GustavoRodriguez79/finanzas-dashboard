@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from database import init_pool, close_pool
-from routes import auth, gastos, ingresos, presupuesto, resumen
+from routes import auth, gastos, ingresos, presupuesto, resumen, ahorros_usd
 import logging
 
 # Configuración del logger global
@@ -66,6 +66,7 @@ app.include_router(ingresos.router,     prefix="/ingresos",     tags=["Ingresos"
 app.include_router(gastos.router,       prefix="/gastos",       tags=["Gastos"])
 app.include_router(presupuesto.router,  prefix="/presupuesto",  tags=["Presupuesto"])
 app.include_router(resumen.router,      prefix="/resumen",      tags=["Resumen"])
+app.include_router(ahorros_usd.router,  prefix="/ahorros-usd",  tags=["Ahorros USD"])
 
 
 # ─── Ruta raíz ───

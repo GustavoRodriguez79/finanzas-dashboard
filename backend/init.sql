@@ -77,3 +77,16 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     expira_en TIMESTAMP NOT NULL,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Ahorros en dólares: depósitos, retiros y ajustes.
+-- A diferencia de gastos, se eliminan con DELETE real (decisión de producto).
+-- "ajuste" suma igual que un depósito.
+CREATE TABLE IF NOT EXISTS ahorros_usd (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('depósito', 'retiro', 'ajuste')),
+    monto DECIMAL(14,2) NOT NULL CHECK (monto > 0),
+    descripcion TEXT,
+    fecha DATE NOT NULL DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
