@@ -212,7 +212,7 @@ CREATE TABLE refresh_tokens (
 
 Documentación interactiva disponible en:
 - Local: `http://127.0.0.1:8000/docs`
-- Producción: [https://tu-servicio.up.railway.app/docs](https://tu-servicio.up.railway.app/docs)
+- Producción: [https://finanzas-dashboard-production.up.railway.app/docs](https://finanzas-dashboard-production.up.railway.app/docs)
 
 ---
 
@@ -369,13 +369,13 @@ Abrís `http://localhost:5173` en el navegador.
 ## 🌐 Deploy
 
 - **Backend:** [Railway](https://railway.com) — Python + FastAPI
-  - API: [https://tu-servicio.up.railway.app](https://tu-servicio.up.railway.app)
-  - Docs interactiva: [https://tu-servicio.up.railway.app/docs](https://tu-servicio.up.railway.app/docs)
+  - API: [https://finanzas-dashboard-production.up.railway.app](https://finanzas-dashboard-production.up.railway.app)
+  - Docs interactiva: [https://finanzas-dashboard-production.up.railway.app/docs](https://finanzas-dashboard-production.up.railway.app/docs)
 - **Base de datos:** [Supabase](https://supabase.com) — PostgreSQL
 - **Frontend:** [Netlify](https://netlify.com) — React + Vite
   - Sitio: [https://finanzas-dashboard-gustavo.netlify.app](https://finanzas-dashboard-gustavo.netlify.app)
 
-> ℹ️ La URL de Railway (`tu-servicio.up.railway.app`) es un placeholder hasta completar el despliegue del servicio.
+> ℹ️ La URL de Railway (`finanzas-dashboard-production.up.railway.app`) es un placeholder hasta completar el despliegue del servicio.
 >
 > ✅ Login con Google OAuth verificado y funcionando en producción.
 
