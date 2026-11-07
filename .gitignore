@@ -32,3 +32,6 @@ docs/SPRINT-*.md
 backend/.env
 frontend/.env
 
+# VS Code
+.vscode/
+.claude/
