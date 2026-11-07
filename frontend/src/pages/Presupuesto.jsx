@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from "react";
 import { presupuestoService } from "../services/api";
+import EstadoVacio from "../components/EstadoVacio";
 import "./Transacciones.css";
 import "./Presupuesto.css";
 
@@ -192,11 +193,12 @@ function Presupuesto() {
       {cargando ? (
         <div className="tabla-loading">Cargando...</div>
       ) : presupuestos.length === 0 ? (
-        <div className="tabla-vacia">
-          No hay presupuestos definidos para este período.
-          <br />
-          <small>Creá uno para empezar a controlar tus gastos.</small>
-        </div>
+        <EstadoVacio
+          icono="🎯"
+          texto="Definí un límite mensual y tomá el control de tus finanzas"
+          textoBoton={mostrarForm ? undefined : "+ Nuevo presupuesto"}
+          onClick={() => setMostrarForm(true)}
+        />
       ) : (
         <div className="presupuesto-grid">
           {presupuestos.map((p) => (

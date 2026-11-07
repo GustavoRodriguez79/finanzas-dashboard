@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { resumenService } from "../services/api";
 import GraficoBarras from "../components/charts/GraficoBarras";
 import GraficoTorta from "../components/charts/GraficoTorta";
+import EstadoVacio from "../components/EstadoVacio";
 import "./ResumenAnual.css";
 
 const MESES = [
@@ -62,6 +63,10 @@ function ResumenAnual() {
     gastos: m.gastos,
   })) || [];
 
+  // Año sin movimientos: en vez de tarjetas en $0 y gráficos vacíos
+  // mostramos el estado vacío (el selector de año queda disponible).
+  const sinDatos = !resumen || (resumen.total_ingresos === 0 && resumen.total_gastos === 0);
+
   return (
     <div className="resumen-anual">
 
@@ -84,6 +89,13 @@ function ResumenAnual() {
         </select>
       </div>
 
+      {sinDatos ? (
+        <EstadoVacio
+          icono="📈"
+          texto="Registrá movimientos durante el año y verás tu evolución financiera aquí"
+        />
+      ) : (
+      <>
       {/* Cards totales anuales */}
       <div className="resumen-totales">
         <div className="total-card ingresos">
@@ -217,6 +229,8 @@ function ResumenAnual() {
           </table>
         </div>
       </div>
+      </>
+      )}
 
     </div>
   );

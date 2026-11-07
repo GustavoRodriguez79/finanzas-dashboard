@@ -1,0 +1,44 @@
+/* EstadoVacio.css
+   Tarjeta de estado vacío. Mismo aspecto que .tabla-vacia, con ícono grande
+   y botón de acción opcional. Usa las variables del tema. */
+
+.estado-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+}
+
+.estado-vacio-icono {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.estado-vacio-texto {
+  margin: 0;
+  max-width: 420px;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.estado-vacio-boton {
+  margin-top: 8px;
+  padding: 10px 20px;
+  background: var(--primary);
+  color: #0f172a;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+
+.estado-vacio-boton:hover {
+  opacity: 0.85;
+}

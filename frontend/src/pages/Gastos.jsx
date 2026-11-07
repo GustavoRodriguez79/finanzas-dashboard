@@ -5,6 +5,7 @@
 import { useState, useEffect } from "react";
 import { gastosService } from "../services/api";
 import "./Transacciones.css";
+import EstadoVacio from "../components/EstadoVacio";
 import { descargarCSV } from "../utils/exportarCSV";
 
 const CATEGORIAS = [
@@ -248,9 +249,20 @@ function Gastos() {
       {cargando ? (
         <div className="tabla-loading">Cargando...</div>
       ) : gastos.length === 0 ? (
-        <div className="tabla-vacia">
-          No hay gastos registrados para este período.
-        </div>
+        // Con categoría filtrada el vacío puede ser solo del filtro, no de la
+        // cuenta: ahí un "primer gasto" sería engañoso, mostramos algo neutral.
+        filtroCategoria ? (
+          <div className="tabla-vacia">
+            No hay gastos en esta categoría para el período.
+          </div>
+        ) : (
+          <EstadoVacio
+            icono="📊"
+            texto="Registrá tu primer gasto y empezá a ver tus patrones de consumo"
+            textoBoton={mostrarForm ? undefined : "+ Nuevo gasto"}
+            onClick={() => setMostrarForm(true)}
+          />
+        )
       ) : (
         <div className="tabla-container">
           <table className="tabla">
