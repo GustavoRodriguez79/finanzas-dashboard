@@ -8,10 +8,14 @@ import { resumenService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import GraficoTorta from "../components/charts/GraficoTorta";
 import GraficoBarras from "../components/charts/GraficoBarras";
+import OnboardingModal from "../components/OnboardingModal";
+import { useOnboarding } from "../hooks/useOnboarding";
 import "./Dashboard.css";
 
 function Dashboard() {
   const { usuario } = useAuth();
+  // Se declara antes de los return anticipados para respetar el orden de hooks
+  const onboarding = useOnboarding();
   const [resumen, setResumen] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
@@ -85,6 +89,9 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
+
+      {/* Onboarding guiado: solo aparece si el usuario no lo completó */}
+      {onboarding.visible && <OnboardingModal onboarding={onboarding} />}
 
       {/* Header con saludo y selector de período */}
       <div className="dashboard-header">

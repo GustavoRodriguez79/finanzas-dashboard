@@ -93,6 +93,9 @@ export const authService = {
 
   // Datos del usuario actual
   getMe: () => api.get("/auth/me"),
+
+  // Marca el onboarding del usuario como completado
+  completarOnboarding: () => api.put("/auth/onboarding-completado"),
 };
 
 // ══════════════════════════════════════════

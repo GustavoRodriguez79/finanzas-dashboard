@@ -3,7 +3,7 @@
 // Provee el estado del usuario y funciones de login/logout
 // a todos los componentes sin necesidad de pasar props manualmente.
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { authService } from "../services/api";
 
 // Crea el contexto — valor inicial vacío
@@ -84,6 +84,18 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ─── Onboarding completado ───
+  // Avisa al backend y actualiza el usuario en memoria para que la UI
+  // lo refleje sin tener que volver a pedir /auth/me.
+  // useCallback: mantiene la misma referencia entre renders, así los
+  // efectos que la usan no se vuelven a ejecutar sin necesidad.
+  const completarOnboarding = useCallback(async () => {
+    await authService.completarOnboarding();
+    setUsuario((actual) =>
+      actual ? { ...actual, onboarding_completado: true } : actual
+    );
+  }, []);
+
   // Valor que se comparte con todos los componentes hijos
   const value = {
     usuario,        // datos del usuario autenticado o null
@@ -92,6 +104,7 @@ export function AuthProvider({ children }) {
     loginGoogle,
     register,
     logout,
+    completarOnboarding,
     isAuthenticated: !!usuario  // true si hay usuario logueado
   };
 
