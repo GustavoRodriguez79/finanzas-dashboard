@@ -46,6 +46,24 @@ export default function AhorrosUSD() {
     fecha: new Date().toISOString().slice(0, 10),
   });
 
+  // Visibilidad del balance, persistida en localStorage. try/catch porque el
+  // acceso puede fallar (modo privado, storage bloqueado).
+  const [saldoUSDVisible, setSaldoUSDVisible] = useState(() => {
+    try {
+      return localStorage.getItem("saldoUSDVisible") !== "false";
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("saldoUSDVisible", String(saldoUSDVisible));
+    } catch {
+      /* sin storage: el toggle funciona igual, solo no persiste */
+    }
+  }, [saldoUSDVisible]);
+
   // Contador que dispara la recarga de datos (tras guardar o eliminar).
   const [recarga, setRecarga] = useState(0);
   const recargar = () => setRecarga((n) => n + 1);
@@ -152,7 +170,7 @@ export default function AhorrosUSD() {
     <div className="usd-page">
       <div className="usd-header">
         <div>
-          <h1 className="usd-title">🇺🇸 Ahorros en USD</h1>
+          <h1 className="usd-title">Ahorros en USD</h1>
           <p className="usd-subtitle">
             Registrá y seguí tus ahorros en dólares
           </p>
@@ -172,9 +190,20 @@ export default function AhorrosUSD() {
 
       <div className="usd-balance-card">
         <div className="usd-balance-main">
-          <div className="usd-balance-label">Balance actual</div>
+          <div className="usd-balance-label">
+            Balance actual
+            <button
+              type="button"
+              className="usd-eye-toggle"
+              onClick={() => setSaldoUSDVisible((v) => !v)}
+              title={saldoUSDVisible ? "Ocultar saldo" : "Mostrar saldo"}
+              aria-label={saldoUSDVisible ? "Ocultar saldo" : "Mostrar saldo"}
+            >
+              {saldoUSDVisible ? "👁️" : "🙈"}
+            </button>
+          </div>
           <div className={`usd-balance-valor ${balance < 0 ? "negativo" : ""}`}>
-            {fmtUSD(balance)}
+            {saldoUSDVisible ? fmtUSD(balance) : "U$S ••••••"}
           </div>
         </div>
         <div className="usd-balance-stats">
@@ -260,14 +289,18 @@ export default function AhorrosUSD() {
                   <div className="input-with-prefix">
                     <span className="input-prefix">$</span>
                     <input
-                      type="number"
-                      min="0.01"
-                      step="0.01"
+                      type="text"
+                      inputMode="decimal"
                       placeholder="0.00"
                       value={form.monto}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, monto: e.target.value }))
-                      }
+                      onChange={(e) => {
+                        // type="number" se comporta distinto según el navegador mobile;
+                        // con texto controlamos nosotros: coma a punto y solo un decimal.
+                        const valor = e.target.value.replace(",", ".");
+                        if (/^\d*\.?\d*$/.test(valor)) {
+                          setForm((f) => ({ ...f, monto: valor }));
+                        }
+                      }}
                       required
                     />
                   </div>

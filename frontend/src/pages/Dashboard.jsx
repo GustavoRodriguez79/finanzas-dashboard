@@ -16,6 +16,25 @@ function Dashboard() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
+  // Visibilidad de los saldos, persistida en localStorage. Se declara antes de los
+  // return anticipados para respetar el orden de hooks. try/catch por si el
+  // storage está bloqueado (modo privado).
+  const [saldoVisible, setSaldoVisible] = useState(() => {
+    try {
+      return localStorage.getItem("saldoVisible") !== "false";
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("saldoVisible", String(saldoVisible));
+    } catch {
+      /* sin storage: el toggle funciona igual, solo no persiste */
+    }
+  }, [saldoVisible]);
+
   // Mes y año actual
   const hoy = new Date();
   const [mes, setMes] = useState(hoy.getMonth() + 1);
@@ -76,6 +95,15 @@ function Dashboard() {
           </p>
         </div>
         <div className="periodo-selector">
+          <button
+            type="button"
+            className="dash-eye-toggle"
+            onClick={() => setSaldoVisible((v) => !v)}
+            title={saldoVisible ? "Ocultar saldos" : "Mostrar saldos"}
+            aria-label={saldoVisible ? "Ocultar saldos" : "Mostrar saldos"}
+          >
+            {saldoVisible ? "👁️" : "🙈"}
+          </button>
           <select
             value={mes}
             onChange={(e) => setMes(Number(e.target.value))}
@@ -100,17 +128,21 @@ function Dashboard() {
         <div className="metric-card ingresos" data-icon="💰">
           <span className="metric-label">💰 Ingresos</span>
           <span className="metric-valor">
-            ${resumen?.total_ingresos?.toLocaleString("es-AR", {
-              minimumFractionDigits: 2
-            })}
+            {saldoVisible
+              ? `$${resumen?.total_ingresos?.toLocaleString("es-AR", {
+                  minimumFractionDigits: 2
+                })}`
+              : "$ ••••••"}
           </span>
         </div>
         <div className="metric-card gastos" data-icon="💸">
           <span className="metric-label">💸 Gastos</span>
           <span className="metric-valor">
-            ${resumen?.total_gastos?.toLocaleString("es-AR", {
-              minimumFractionDigits: 2
-            })}
+            {saldoVisible
+              ? `$${resumen?.total_gastos?.toLocaleString("es-AR", {
+                  minimumFractionDigits: 2
+                })}`
+              : "$ ••••••"}
           </span>
         </div>
         <div
@@ -119,15 +151,17 @@ function Dashboard() {
         >
           <span className="metric-label">⚖️ Balance</span>
           <span className="metric-valor">
-            ${resumen?.balance?.toLocaleString("es-AR", {
-              minimumFractionDigits: 2
-            })}
+            {saldoVisible
+              ? `$${resumen?.balance?.toLocaleString("es-AR", {
+                  minimumFractionDigits: 2
+                })}`
+              : "$ ••••••"}
           </span>
         </div>
         <div className="metric-card ahorro" data-icon="🎯">
           <span className="metric-label">🎯 Ahorro</span>
           <span className="metric-valor">
-            {resumen?.porcentaje_ahorro}%
+            {saldoVisible ? `${resumen?.porcentaje_ahorro}%` : "••••"}
           </span>
         </div>
       </div>
