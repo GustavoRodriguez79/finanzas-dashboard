@@ -70,6 +70,21 @@
   gap: 10px;
 }
 
+.dash-eye-toggle {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dash-eye-toggle:hover {
+  border-color: var(--primary);
+}
+
 .periodo-selector select {
   background: var(--card);
   border: 1.5px solid var(--border);
