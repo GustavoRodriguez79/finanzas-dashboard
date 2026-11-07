@@ -176,71 +176,80 @@
   opacity: 0.75;
 }
 
-/* ─── Alertas ─── */
-.dashboard-alertas h2 {
-  font-size: 1rem;
-  color: var(--warning);
-  margin-bottom: 14px;
-  font-weight: 700;
-}
-
-.alertas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-.alerta-card {
+/* ─── Progreso de presupuesto por categoría ───
+   Prefijo dash-pres-: Presupuesto.css es global y ya define .presupuesto-barra,
+   así evitamos pisar sus estilos. */
+.dash-pres {
   background: var(--card);
   border-radius: var(--radio);
-  padding: 16px;
-  border: 2px solid;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  padding: 22px;
+  border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
 }
 
-.alerta-card.advertencia {
-  border-color: var(--warning);
-}
-.alerta-card.superado {
-  border-color: var(--danger);
+.dash-pres h2 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-.alerta-categoria {
+.dash-pres-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px 28px;
+}
+
+.dash-pres-fila {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-pres-info {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.dash-pres-categoria {
   font-weight: 700;
   color: var(--text);
 }
-.alerta-porcentaje {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--warning);
-}
-.alerta-card.superado .alerta-porcentaje {
-  color: var(--danger);
-}
-.alerta-detalle {
+
+.dash-pres-montos {
+  flex: 1;
   font-size: 0.82rem;
   color: var(--text-secondary);
 }
 
-.alerta-barra {
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 4px;
+.dash-pres-porcentaje {
+  font-weight: 800;
 }
-.alerta-progreso {
+
+.dash-pres-barra {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dash-pres-progreso {
   height: 100%;
-  background: var(--warning);
-  border-radius: 3px;
+  border-radius: 4px;
   transition: width 0.5s ease;
 }
-.alerta-card.superado .alerta-progreso {
-  background: var(--danger);
-}
+
+/* Verde hasta 60%, amarillo hasta 80%, rojo por encima */
+.dash-pres-progreso.verde { background: var(--success); }
+.dash-pres-progreso.amarillo { background: var(--warning); }
+.dash-pres-progreso.rojo { background: var(--danger); }
+
+.dash-pres-porcentaje.verde { color: var(--success); }
+.dash-pres-porcentaje.amarillo { color: var(--warning); }
+.dash-pres-porcentaje.rojo { color: var(--danger); }
 
 /* ─── Gráficos ─── */
 .dashboard-graficos {
@@ -264,6 +273,16 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
+}
+
+/* Mensaje de carga/error dentro de un gráfico (misma altura que el gráfico) */
+.grafico-estado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 280px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
 /* ─── Extra cards ─── */

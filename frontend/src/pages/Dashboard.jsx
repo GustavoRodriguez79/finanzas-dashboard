@@ -1,7 +1,7 @@
 // Dashboard.jsx
 // Página principal del dashboard financiero.
 // Muestra el resumen del mes: ingresos, gastos, balance,
-// % ahorro, gráficos y alertas de presupuesto.
+// % ahorro, progreso de presupuestos por categoría y gráficos.
 
 import { useState, useEffect } from "react";
 import { resumenService } from "../services/api";
@@ -11,6 +11,48 @@ import GraficoBarras from "../components/charts/GraficoBarras";
 import OnboardingModal from "../components/OnboardingModal";
 import { useOnboarding } from "../hooks/useOnboarding";
 import "./Dashboard.css";
+
+const MESES_CORTOS = [
+  "", "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+  "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+];
+
+// Color de la barra de presupuesto: verde hasta 60%, amarillo hasta 80%, rojo por encima
+function colorProgreso(porcentaje) {
+  if (porcentaje > 80) return "rojo";
+  if (porcentaje > 60) return "amarillo";
+  return "verde";
+}
+
+// Arma los datos del gráfico de los últimos 6 meses hasta el mes actual.
+// mesesAnterior solo viene si el mes actual es menor a 6 (hay que completar
+// la ventana con meses del año pasado). Se descartan los meses vacíos del
+// principio para que un usuario nuevo no vea barras en cero; los ceros del
+// medio se conservan para no deformar la línea de tiempo.
+function ultimosSeisMeses(anioActual, mesActual, mesesActual, mesesAnterior) {
+  const historial = [
+    ...(mesesAnterior || []).map((m) => ({ ...m, anio: anioActual - 1 })),
+    ...(mesesActual || [])
+      .filter((m) => m.mes <= mesActual)
+      .map((m) => ({ ...m, anio: anioActual })),
+  ];
+
+  const ventana = historial.slice(-6);
+  const primeroConDatos = ventana.findIndex((m) => m.ingresos > 0 || m.gastos > 0);
+  if (primeroConDatos === -1) return [];
+
+  const conDatos = ventana.slice(primeroConDatos);
+  // Si la ventana cruza de año, se agrega el año para no confundir "Dic" con "Ene"
+  const cruzaAnio = conDatos.some((m) => m.anio !== anioActual);
+
+  return conDatos.map((m) => ({
+    nombre: cruzaAnio
+      ? `${MESES_CORTOS[m.mes]} ${String(m.anio).slice(2)}`
+      : MESES_CORTOS[m.mes],
+    ingresos: m.ingresos,
+    gastos: m.gastos,
+  }));
+}
 
 function Dashboard() {
   const { usuario } = useAuth();
@@ -66,6 +108,55 @@ function Dashboard() {
       setCargando(false);
     }
   };
+
+  // Gráfico de los últimos 6 meses: independiente del selector de período,
+  // se pide una sola vez al montar y no bloquea el resto del dashboard.
+  const [ultimosMeses, setUltimosMeses] = useState({
+    cargando: true,
+    error: false,
+    datos: [],
+  });
+
+  useEffect(() => {
+    let cancelado = false;
+
+    const cargarUltimosMeses = async () => {
+      const ahora = new Date();
+      const anioActual = ahora.getFullYear();
+      const mesActual = ahora.getMonth() + 1;
+
+      // De enero a mayo la ventana de 6 meses incluye meses del año anterior
+      const [actual, anterior] = await Promise.allSettled([
+        resumenService.getAnual({ anio: anioActual }),
+        mesActual < 6
+          ? resumenService.getAnual({ anio: anioActual - 1 })
+          : Promise.resolve(null),
+      ]);
+      if (cancelado) return;
+
+      // El año actual es obligatorio; si falla el anterior, se muestra lo que haya
+      if (actual.status === "rejected") {
+        setUltimosMeses({ cargando: false, error: true, datos: [] });
+        return;
+      }
+
+      setUltimosMeses({
+        cargando: false,
+        error: false,
+        datos: ultimosSeisMeses(
+          anioActual,
+          mesActual,
+          actual.value.data.meses,
+          anterior.status === "fulfilled" ? anterior.value?.data.meses : null
+        ),
+      });
+    };
+
+    cargarUltimosMeses();
+    return () => {
+      cancelado = true;
+    };
+  }, []);
 
   if (cargando) {
     return (
@@ -173,29 +264,36 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Alertas de presupuesto */}
-      {resumen?.alertas_presupuesto?.length > 0 && (
-        <div className="dashboard-alertas">
-          <h2>⚠️ Alertas de presupuesto</h2>
-          <div className="alertas-grid">
-            {resumen.alertas_presupuesto.map((alerta, i) => (
-              <div
-                key={i}
-                className={`alerta-card ${alerta.superado ? "superado" : "advertencia"}`}
-              >
-                <span className="alerta-categoria">{alerta.categoria}</span>
-                <span className="alerta-porcentaje">{alerta.porcentaje}%</span>
-                <span className="alerta-detalle">
-                  ${alerta.gastado.toLocaleString("es-AR")} de ${alerta.limite.toLocaleString("es-AR")}
-                </span>
-                <div className="alerta-barra">
-                  <div
-                    className="alerta-progreso"
-                    style={{ width: `${Math.min(alerta.porcentaje, 100)}%` }}
-                  />
+      {/* Progreso de TODAS las categorías con presupuesto en el mes */}
+      {resumen?.presupuestos?.length > 0 && (
+        <div className="dash-pres">
+          <h2>🎯 Presupuesto del mes</h2>
+          <div className="dash-pres-lista">
+            {resumen.presupuestos.map((p) => {
+              const color = colorProgreso(p.porcentaje);
+              return (
+                <div key={p.categoria} className="dash-pres-fila">
+                  <div className="dash-pres-info">
+                    <span className="dash-pres-categoria">{p.categoria}</span>
+                    <span className="dash-pres-montos">
+                      {saldoVisible
+                        ? `$${p.gastado.toLocaleString("es-AR")} / $${p.limite.toLocaleString("es-AR")}`
+                        : "$ •••••• / $ ••••••"}
+                    </span>
+                    <span className={`dash-pres-porcentaje ${color}`}>
+                      {p.porcentaje}%
+                    </span>
+                  </div>
+                  {/* La barra se corta en 100%, el texto muestra el porcentaje real */}
+                  <div className="dash-pres-barra">
+                    <div
+                      className={`dash-pres-progreso ${color}`}
+                      style={{ width: `${Math.min(p.porcentaje, 100)}%` }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -209,21 +307,14 @@ function Dashboard() {
           />
         </div>
         <div className="grafico-card">
-          <h2>Comparativa con mes anterior</h2>
-          <GraficoBarras
-            datos={[
-              {
-                nombre: "Mes anterior",
-                ingresos: resumen?.comparativa?.ingresos_mes_anterior || 0,
-                gastos: resumen?.comparativa?.gastos_mes_anterior || 0,
-              },
-              {
-                nombre: MESES[mes],
-                ingresos: resumen?.total_ingresos || 0,
-                gastos: resumen?.total_gastos || 0,
-              }
-            ]}
-          />
+          <h2>Últimos 6 meses</h2>
+          {ultimosMeses.cargando ? (
+            <div className="grafico-estado">Cargando...</div>
+          ) : ultimosMeses.error ? (
+            <div className="grafico-estado">No se pudo cargar el gráfico.</div>
+          ) : (
+            <GraficoBarras datos={ultimosMeses.datos} />
+          )}
         </div>
       </div>
 

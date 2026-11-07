@@ -1,6 +1,6 @@
 // GraficoBarras.jsx
-// Gráfico de barras para comparar ingresos y gastos
-// entre el mes actual y el mes anterior.
+// Gráfico de barras para comparar ingresos y gastos por período.
+// Recibe [{ nombre, ingresos, gastos }] (hoy: los últimos 6 meses).
 
 import {
   BarChart,

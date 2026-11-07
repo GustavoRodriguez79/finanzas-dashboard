@@ -142,19 +142,23 @@ def resumen_mes(
             GROUP BY p.categoria, p.monto_limite
         """, (current_user["id"], mes, anio))
 
-        alertas = []
+        # Se devuelven TODOS los presupuestos del mes (el dashboard dibuja una
+        # barra por categoría); las alertas son solo las que llegan al 80%.
+        presupuestos = []
         for row in cursor.fetchall():
             limite = float(row[1])
             gastado = float(row[2])
             porcentaje = (gastado / limite * 100) if limite > 0 else 0
-            if porcentaje >= 80:
-                alertas.append({
-                    "categoria": row[0],
-                    "limite": limite,
-                    "gastado": gastado,
-                    "porcentaje": round(porcentaje, 1),
-                    "superado": porcentaje >= 100
-                })
+            presupuestos.append({
+                "categoria": row[0],
+                "limite": limite,
+                "gastado": gastado,
+                "porcentaje": round(porcentaje, 1),
+                "superado": porcentaje >= 100
+            })
+
+        # Se mantiene por compatibilidad con clientes que ya la usaban
+        alertas = [p for p in presupuestos if p["porcentaje"] >= 80]
 
         return {
             "mes": mes,
@@ -171,6 +175,7 @@ def resumen_mes(
                 "variacion_gastos": variacion_gastos
             },
             "proyeccion_gasto_mes": proyeccion_gasto_mes,
+            "presupuestos": presupuestos,
             "alertas_presupuesto": alertas
         }
 
