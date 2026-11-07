@@ -260,14 +260,18 @@ export default function AhorrosUSD() {
                   <div className="input-with-prefix">
                     <span className="input-prefix">$</span>
                     <input
-                      type="number"
-                      min="0.01"
-                      step="0.01"
+                      type="text"
+                      inputMode="decimal"
                       placeholder="0.00"
                       value={form.monto}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, monto: e.target.value }))
-                      }
+                      onChange={(e) => {
+                        // type="number" se comporta distinto según el navegador mobile;
+                        // con texto controlamos nosotros: coma a punto y solo un decimal.
+                        const valor = e.target.value.replace(",", ".");
+                        if (/^\d*\.?\d*$/.test(valor)) {
+                          setForm((f) => ({ ...f, monto: valor }));
+                        }
+                      }}
                       required
                     />
                   </div>
