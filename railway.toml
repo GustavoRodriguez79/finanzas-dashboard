@@ -4,6 +4,7 @@
 
 [build]
 builder = "NIXPACKS"
+rootDirectory = "backend"
 
 [deploy]
 # Railway inyecta $PORT. Escuchar en 0.0.0.0 es obligatorio para que sea accesible.
