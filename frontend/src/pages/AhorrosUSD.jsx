@@ -170,7 +170,7 @@ export default function AhorrosUSD() {
     <div className="usd-page">
       <div className="usd-header">
         <div>
-          <h1 className="usd-title">🇺🇸 Ahorros en USD</h1>
+          <h1 className="usd-title">Ahorros en USD</h1>
           <p className="usd-subtitle">
             Registrá y seguí tus ahorros en dólares
           </p>
