@@ -14,8 +14,15 @@ CREATE TABLE IF NOT EXISTS usuarios (
     avatar_url VARCHAR(500),
     proveedor VARCHAR(20) DEFAULT 'local',   -- 'local' o 'google'
     activo BOOLEAN DEFAULT TRUE,
+    onboarding_completado BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Migración para bases ya creadas: CREATE TABLE IF NOT EXISTS no agrega columnas
+-- a una tabla existente. Después de correrla, marcar como completado a los
+-- usuarios previos para que no vean el onboarding:
+--   UPDATE usuarios SET onboarding_completado = TRUE;
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS onboarding_completado BOOLEAN DEFAULT FALSE;
 
 -- Ingresos por categoría
 CREATE TABLE IF NOT EXISTS ingresos (

@@ -127,7 +127,8 @@ def get_current_user(
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            SELECT id, nombre, email, avatar_url, proveedor, activo, created_at
+            SELECT id, nombre, email, avatar_url, proveedor, activo, created_at,
+                   onboarding_completado
             FROM usuarios
             WHERE id = %s
         """, (usuario_id,))
@@ -152,7 +153,9 @@ def get_current_user(
             "avatar_url": row[3],
             "proveedor": row[4],
             "activo": row[5],
-            "created_at": str(row[6])
+            "created_at": str(row[6]),
+            # COALESCE en Python: filas viejas podrían tener NULL
+            "onboarding_completado": bool(row[7])
         }
     finally:
         cursor.close()

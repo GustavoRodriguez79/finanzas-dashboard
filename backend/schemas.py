@@ -48,6 +48,8 @@ class UsuarioResponse(BaseModel):
     avatar_url: Optional[str]
     proveedor: str
     created_at: str
+    # Default False: un usuario recién registrado siempre arranca sin onboarding
+    onboarding_completado: bool = False
 
 class TokenResponse(BaseModel):
     """Respuesta del endpoint de login con los tokens de acceso."""
