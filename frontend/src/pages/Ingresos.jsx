@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { ingresosService } from "../services/api";
 import "./Transacciones.css";
 import { descargarCSV } from "../utils/exportarCSV";
+import { ANIOS_HISTORICOS } from "../utils/anios";
 
 const CATEGORIAS = ["Sueldo", "Freelance", "Inversiones", "Alquiler", "Otros"];
 
@@ -80,7 +81,7 @@ function Ingresos() {
   };
 
   const handleEliminar = async (id) => {
-    if (!confirm("¿Eliminár este ingreso?")) return;
+    if (!confirm("¿Eliminar este ingreso?")) return;
     try {
       await ingresosService.delete(id);
       cargarIngresos();
@@ -136,7 +137,7 @@ function Ingresos() {
           ))}
         </select>
         <select value={filtroAnio} onChange={(e) => setFiltroAnio(Number(e.target.value))}>
-          {[2024, 2025, 2026].map((a) => (
+          {ANIOS_HISTORICOS.map((a) => (
             <option key={a} value={a}>{a}</option>
           ))}
         </select>

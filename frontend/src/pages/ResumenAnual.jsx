@@ -8,6 +8,7 @@ import { resumenService } from "../services/api";
 import GraficoBarras from "../components/charts/GraficoBarras";
 import GraficoTorta from "../components/charts/GraficoTorta";
 import EstadoVacio from "../components/EstadoVacio";
+import { ANIOS_HISTORICOS } from "../utils/anios";
 import "./ResumenAnual.css";
 
 const MESES = [
@@ -83,7 +84,7 @@ function ResumenAnual() {
           onChange={(e) => setAnio(Number(e.target.value))}
           className="anio-selector"
         >
-          {[2024, 2025, 2026].map((a) => (
+          {ANIOS_HISTORICOS.map((a) => (
             <option key={a} value={a}>{a}</option>
           ))}
         </select>

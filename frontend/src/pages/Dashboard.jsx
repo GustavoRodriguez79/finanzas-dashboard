@@ -10,6 +10,7 @@ import GraficoTorta from "../components/charts/GraficoTorta";
 import GraficoBarras from "../components/charts/GraficoBarras";
 import OnboardingModal from "../components/OnboardingModal";
 import { useOnboarding } from "../hooks/useOnboarding";
+import { ANIOS_HISTORICOS } from "../utils/anios";
 import "./Dashboard.css";
 
 const MESES_CORTOS = [
@@ -91,22 +92,45 @@ function Dashboard() {
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
   ];
 
-  // Carga el resumen cuando cambia el mes o año
-  useEffect(() => {
-    cargarResumen();
-  }, [mes, anio]);
+  // Contador para forzar una recarga manual ("Reintentar") sin cambiar mes ni año
+  const [recarga, setRecarga] = useState(0);
 
-  const cargarResumen = async () => {
+  // Carga el resumen cuando cambia el mes, el año o se pide una recarga.
+  // La función vive dentro del efecto (solo se usa acá). El loader lo activan los
+  // manejadores de abajo: setear estado de forma síncrona dentro de un efecto
+  // provoca renders en cascada. "cancelado" descarta respuestas de un período
+  // anterior si el usuario cambia de mes antes de que llegue la respuesta.
+  useEffect(() => {
+    let cancelado = false;
+
+    const cargarResumen = async () => {
+      try {
+        const respuesta = await resumenService.getMes({ mes, anio });
+        if (!cancelado) setResumen(respuesta.data);
+      } catch {
+        if (!cancelado) setError("Error al cargar el resumen. Verificá tu conexión.");
+      } finally {
+        if (!cancelado) setCargando(false);
+      }
+    };
+
+    cargarResumen();
+    return () => {
+      cancelado = true;
+    };
+  }, [mes, anio, recarga]);
+
+  // Cambio de período: muestra el loader y limpia el error antes de recargar
+  const handlePeriodo = (setter) => (e) => {
     setCargando(true);
     setError("");
-    try {
-      const respuesta = await resumenService.getMes({ mes, anio });
-      setResumen(respuesta.data);
-    } catch {
-      setError("Error al cargar el resumen. Verificá tu conexión.");
-    } finally {
-      setCargando(false);
-    }
+    setter(Number(e.target.value));
+  };
+
+  const reintentarResumen = () => {
+    setCargando(true);
+    setError("");
+    setRecarga((n) => n + 1);
   };
 
   // Gráfico de los últimos 6 meses: independiente del selector de período,
@@ -171,7 +195,7 @@ function Dashboard() {
     return (
       <div className="dashboard-error">
         <p>{error}</p>
-        <button onClick={cargarResumen} className="btn-retry">
+        <button onClick={reintentarResumen} className="btn-retry">
           Reintentar
         </button>
       </div>
@@ -204,7 +228,7 @@ function Dashboard() {
           </button>
           <select
             value={mes}
-            onChange={(e) => setMes(Number(e.target.value))}
+            onChange={handlePeriodo(setMes)}
           >
             {MESES.slice(1).map((nombre, i) => (
               <option key={i + 1} value={i + 1}>{nombre}</option>
@@ -212,9 +236,9 @@ function Dashboard() {
           </select>
           <select
             value={anio}
-            onChange={(e) => setAnio(Number(e.target.value))}
+            onChange={handlePeriodo(setAnio)}
           >
-            {[2024, 2025, 2026].map((a) => (
+            {ANIOS_HISTORICOS.map((a) => (
               <option key={a} value={a}>{a}</option>
             ))}
           </select>

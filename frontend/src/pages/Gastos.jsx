@@ -7,6 +7,7 @@ import { gastosService } from "../services/api";
 import "./Transacciones.css";
 import "./Gastos.css";
 import EstadoVacio from "../components/EstadoVacio";
+import { ANIOS_HISTORICOS } from "../utils/anios";
 import { descargarCSV } from "../utils/exportarCSV";
 
 const CATEGORIAS = [
@@ -41,22 +42,45 @@ function Gastos() {
     recurrente: false
   });
 
-  useEffect(() => {
-    cargarGastos();
-  }, [filtroMes, filtroAnio, filtroCategoria]);
+  // Contador para recargar la lista tras crear o anular un gasto, sin tocar los filtros
+  const [recarga, setRecarga] = useState(0);
 
-  const cargarGastos = async () => {
+  // Carga los gastos cuando cambia algún filtro o se pide una recarga.
+  // La función vive dentro del efecto (solo se usa acá). El loader lo activan
+  // handleFiltro y recargarGastos: setear estado de forma síncrona dentro de un
+  // efecto provoca renders en cascada. "cancelado" descarta respuestas de filtros
+  // anteriores si el usuario los cambia antes de que llegue la respuesta.
+  useEffect(() => {
+    let cancelado = false;
+
+    const cargarGastos = async () => {
+      try {
+        const params = { mes: filtroMes, anio: filtroAnio };
+        if (filtroCategoria) params.categoria = filtroCategoria;
+        const respuesta = await gastosService.getAll(params);
+        if (!cancelado) setGastos(respuesta.data);
+      } catch {
+        if (!cancelado) setError("Error al cargar gastos.");
+      } finally {
+        if (!cancelado) setCargando(false);
+      }
+    };
+
+    cargarGastos();
+    return () => {
+      cancelado = true;
+    };
+  }, [filtroMes, filtroAnio, filtroCategoria, recarga]);
+
+  const recargarGastos = () => {
     setCargando(true);
-    try {
-      const params = { mes: filtroMes, anio: filtroAnio };
-      if (filtroCategoria) params.categoria = filtroCategoria;
-      const respuesta = await gastosService.getAll(params);
-      setGastos(respuesta.data);
-    } catch {
-      setError("Error al cargar gastos.");
-    } finally {
-      setCargando(false);
-    }
+    setRecarga((n) => n + 1);
+  };
+
+  // Cambio de filtro: muestra el loader y aplica el valor (convertir adapta el tipo)
+  const handleFiltro = (setter, convertir = (v) => v) => (e) => {
+    setCargando(true);
+    setter(convertir(e.target.value));
   };
 
   const handleChange = (e) => {
@@ -80,7 +104,7 @@ function Gastos() {
         recurrente: false
       });
       setMostrarForm(false);
-      cargarGastos();
+      recargarGastos();
     } catch {
       setError("Error al crear el gasto.");
     }
@@ -90,7 +114,7 @@ function Gastos() {
     if (!confirm("¿Anular este gasto? El registro se mantendrá en el historial.")) return;
     try {
       await gastosService.anular(id);
-      cargarGastos();
+      recargarGastos();
     } catch {
       setError("Error al anular el gasto.");
     }
@@ -137,19 +161,19 @@ function Gastos() {
 
       {/* Filtros */}
       <div className="filtros-bar">
-        <select value={filtroMes} onChange={(e) => setFiltroMes(Number(e.target.value))}>
+        <select value={filtroMes} onChange={handleFiltro(setFiltroMes, Number)}>
           {MESES.slice(1).map((nombre, i) => (
             <option key={i + 1} value={i + 1}>{nombre}</option>
           ))}
         </select>
-        <select value={filtroAnio} onChange={(e) => setFiltroAnio(Number(e.target.value))}>
-          {[2024, 2025, 2026].map((a) => (
+        <select value={filtroAnio} onChange={handleFiltro(setFiltroAnio, Number)}>
+          {ANIOS_HISTORICOS.map((a) => (
             <option key={a} value={a}>{a}</option>
           ))}
         </select>
         <select
           value={filtroCategoria}
-          onChange={(e) => setFiltroCategoria(e.target.value)}
+          onChange={handleFiltro(setFiltroCategoria)}
         >
           <option value="">Todas las categorías</option>
           {CATEGORIAS.map((c) => (

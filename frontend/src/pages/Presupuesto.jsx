@@ -6,6 +6,7 @@
 import { useState, useEffect } from "react";
 import { presupuestoService } from "../services/api";
 import EstadoVacio from "../components/EstadoVacio";
+import { ANIOS_CON_PROXIMO } from "../utils/anios";
 import "./Transacciones.css";
 import "./Presupuesto.css";
 
@@ -125,7 +126,7 @@ function Presupuesto() {
           value={filtroAnio}
           onChange={(e) => setFiltroAnio(Number(e.target.value))}
         >
-          {[2024, 2025, 2026].map((a) => (
+          {ANIOS_CON_PROXIMO.map((a) => (
             <option key={a} value={a}>{a}</option>
           ))}
         </select>
@@ -175,7 +176,7 @@ function Presupuesto() {
               <div className="form-group">
                 <label>Año *</label>
                 <select name="anio" value={form.anio} onChange={handleChange}>
-                  {[2024, 2025, 2026].map((a) => (
+                  {ANIOS_CON_PROXIMO.map((a) => (
                     <option key={a} value={a}>{a}</option>
                   ))}
                 </select>
