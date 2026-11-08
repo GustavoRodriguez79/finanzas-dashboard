@@ -179,6 +179,19 @@
 /* ─── Progreso de presupuesto por categoría ───
    Prefijo dash-pres-: Presupuesto.css es global y ya define .presupuesto-barra,
    así evitamos pisar sus estilos. */
+/* Chip de racha. .dashboard es flex en columna con gap, así que el separación
+   vertical sale del gap; align-self evita que el chip ocupe todo el ancho */
+.dash-racha-chip {
+  align-self: flex-start;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.85), rgba(220, 38, 38, 0.85));
+  box-shadow: 0 2px 10px rgba(249, 115, 22, 0.25);
+}
+
 .dash-pres {
   background: var(--card);
   border-radius: var(--radio);

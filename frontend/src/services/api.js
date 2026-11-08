@@ -127,6 +127,9 @@ export const gastosService = {
   // Obtener todos los gastos con filtros opcionales
   getAll: (params) => api.get("/gastos/", { params }),
 
+  // Días consecutivos registrando gastos
+  getRacha: () => api.get("/gastos/racha"),
+
   // Crear nuevo gasto
   create: (datos) => api.post("/gastos/", datos),
 

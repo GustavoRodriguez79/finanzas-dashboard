@@ -4,7 +4,7 @@
 // % ahorro, progreso de presupuestos por categoría y gráficos.
 
 import { useState, useEffect } from "react";
-import { resumenService } from "../services/api";
+import { resumenService, gastosService } from "../services/api";
 import { useAuth } from "../hooks/useAuth";
 import GraficoTorta from "../components/charts/GraficoTorta";
 import GraficoBarras from "../components/charts/GraficoBarras";
@@ -182,6 +182,28 @@ function Dashboard() {
     };
   }, []);
 
+  // Racha de días registrando gastos: independiente del período elegido. Si falla,
+  // simplemente no se muestra el chip (es un extra, no debe romper el dashboard).
+  const [racha, setRacha] = useState(0);
+
+  useEffect(() => {
+    let cancelado = false;
+
+    const cargarRacha = async () => {
+      try {
+        const respuesta = await gastosService.getRacha();
+        if (!cancelado) setRacha(respuesta.data.racha);
+      } catch {
+        /* sin racha: el chip queda oculto */
+      }
+    };
+
+    cargarRacha();
+    return () => {
+      cancelado = true;
+    };
+  }, []);
+
   if (cargando) {
     return (
       <div className="dashboard-loading">
@@ -287,6 +309,13 @@ function Dashboard() {
           </span>
         </div>
       </div>
+
+      {/* Chip de racha: solo si hay al menos 1 día */}
+      {racha > 0 && (
+        <div className="dash-racha-chip">
+          🔥 Llevas {racha} {racha === 1 ? "día" : "días"} seguidos registrando tus gastos
+        </div>
+      )}
 
       {/* Progreso de TODAS las categorías con presupuesto en el mes */}
       {resumen?.presupuestos?.length > 0 && (

@@ -8,6 +8,7 @@ from typing import Optional
 from database import get_connection, release_connection
 from schemas import GastoCreate, GastoUpdate, GastoResponse
 from auth import get_current_user
+from datetime import date, timedelta
 import logging
 
 logger = logging.getLogger(__name__)
@@ -73,6 +74,53 @@ def obtener_gastos(
         ]
     except Exception as e:
         logger.error(f"Error obteniendo gastos: {e}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+    finally:
+        cursor.close()
+        release_connection(conn)
+
+
+# ══════════════════════════════════════════
+#  RACHA DE DÍAS CONSECUTIVOS
+# ══════════════════════════════════════════
+
+# Se declara antes de las rutas con /{gasto_id} para que no haya colisión de rutas
+@router.get("/racha")
+def obtener_racha(current_user: dict = Depends(get_current_user)) -> dict:
+    """
+    Retorna cuántos días seguidos registró gastos el usuario (por fecha del gasto).
+    Los gastos anulados no cuentan. La racha sigue activa si el último día
+    con gastos fue hoy o ayer: hasta fin del día no se corta.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        hoy = date.today()
+        # Se ignoran fechas futuras (ej. gastos cargados por adelantado): si no,
+        # el primer día de la lista nunca sería hoy/ayer y la racha daría 0
+        cursor.execute("""
+            SELECT DISTINCT fecha::date
+            FROM gastos
+            WHERE usuario_id = %s AND anulado = FALSE AND fecha::date <= %s
+            ORDER BY fecha::date DESC
+        """, (current_user["id"], hoy))
+        fechas = [fila[0] for fila in cursor.fetchall()]
+
+        if not fechas or fechas[0] < hoy - timedelta(days=1):
+            return {"racha": 0}
+
+        # Cuenta hacia atrás mientras los días sean consecutivos
+        racha = 0
+        fecha_esperada = fechas[0]
+        for fecha in fechas:
+            if fecha != fecha_esperada:
+                break
+            racha += 1
+            fecha_esperada -= timedelta(days=1)
+
+        return {"racha": racha}
+    except Exception as e:
+        logger.error(f"Error calculando racha: {e}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
     finally:
         cursor.close()
