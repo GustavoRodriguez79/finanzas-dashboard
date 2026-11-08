@@ -24,7 +24,9 @@ function textoDias(dias) {
 }
 
 function Perfil() {
-  const { usuario } = useAuth();
+  const { usuario, activarPremium } = useAuth();
+  const [activando, setActivando] = useState(false);
+  const [errorPremium, setErrorPremium] = useState(null);
   const [stats, setStats] = useState(null);
   const [errorStats, setErrorStats] = useState(false);
   // Si la foto falla al cargar (p. ej. Google bloquea el hotlink) se muestra la inicial
@@ -47,6 +49,18 @@ function Perfil() {
       cancelado = true;
     };
   }, []);
+
+  const handleActivarPremium = async () => {
+    setActivando(true);
+    setErrorPremium(null);
+    try {
+      await activarPremium();
+    } catch {
+      setErrorPremium("No se pudo activar. Intentá de nuevo.");
+    } finally {
+      setActivando(false);
+    }
+  };
 
   const inicial = usuario?.nombre
     ? usuario.nombre.charAt(0).toUpperCase()
@@ -115,9 +129,18 @@ function Perfil() {
           Recibí un resumen mensual automático con tus gastos, ahorros y
           proyecciones directo en tu email.
         </p>
-        <button className="perfil-btn-proximamente" disabled>
-          Próximamente
-        </button>
+        {usuario?.plan === "premium" ? (
+          <span className="perfil-premium-activo">✅ Plan Premium activo</span>
+        ) : (
+          <button
+            className="perfil-btn-premium"
+            onClick={handleActivarPremium}
+            disabled={activando}
+          >
+            {activando ? "Activando..." : "✨ Activar Premium (gratis en demo)"}
+          </button>
+        )}
+        {errorPremium && <p className="perfil-error">{errorPremium}</p>}
       </section>
 
     </div>

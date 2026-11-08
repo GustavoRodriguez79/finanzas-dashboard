@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     proveedor VARCHAR(20) DEFAULT 'local',   -- 'local' o 'google'
     activo BOOLEAN DEFAULT TRUE,
     onboarding_completado BOOLEAN DEFAULT FALSE,
+    plan VARCHAR(20) DEFAULT 'free' NOT NULL,   -- 'free' o 'premium'
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -23,6 +24,10 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- usuarios previos para que no vean el onboarding:
 --   UPDATE usuarios SET onboarding_completado = TRUE;
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS onboarding_completado BOOLEAN DEFAULT FALSE;
+
+-- Plan del usuario (v2.0, Premium simulado). Los usuarios existentes quedan en 'free'.
+-- Correr ANTES de desplegar el backend: el código ya hace SELECT de esta columna.
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS plan VARCHAR(20) DEFAULT 'free' NOT NULL;
 
 -- Ingresos por categoría
 CREATE TABLE IF NOT EXISTS ingresos (

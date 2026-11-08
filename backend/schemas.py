@@ -53,6 +53,8 @@ class UsuarioResponse(BaseModel):
     created_at: datetime
     # Default False: un usuario recién registrado siempre arranca sin onboarding
     onboarding_completado: bool = False
+    # 'free' o 'premium'. Default 'free': un usuario nuevo siempre arranca en Free
+    plan: str = "free"
 
 class TokenResponse(BaseModel):
     """Respuesta del endpoint de login con los tokens de acceso."""

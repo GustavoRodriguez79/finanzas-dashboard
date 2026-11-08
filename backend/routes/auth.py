@@ -52,7 +52,7 @@ def register(datos: UsuarioRegister):
         cursor.execute("""
             INSERT INTO usuarios (nombre, email, password_hash, proveedor)
             VALUES (%s, %s, %s, 'local')
-            RETURNING id, nombre, email, avatar_url, proveedor, created_at
+            RETURNING id, nombre, email, avatar_url, proveedor, created_at, plan
         """, (datos.nombre, datos.email, password_hash))
 
         row = cursor.fetchone()
@@ -72,7 +72,8 @@ def register(datos: UsuarioRegister):
                 email=row[2],
                 avatar_url=row[3],
                 proveedor=row[4],
-                created_at=str(row[5])
+                created_at=str(row[5]),
+                plan=row[6]
             )
         )
     except HTTPException:
@@ -101,7 +102,7 @@ def login(datos: UsuarioLogin):
     try:
         cursor.execute("""
             SELECT id, nombre, email, password_hash, avatar_url, proveedor, activo, created_at,
-                   onboarding_completado
+                   onboarding_completado, plan
             FROM usuarios
             WHERE email = %s
         """, (datos.email,))
@@ -151,7 +152,8 @@ def login(datos: UsuarioLogin):
                 avatar_url=row[4],
                 proveedor=row[5],
                 created_at=str(row[7]),
-                onboarding_completado=bool(row[8])
+                onboarding_completado=bool(row[8]),
+                plan=row[9]
             )
         )
     except HTTPException:
@@ -192,7 +194,7 @@ async def login_google(payload: dict):
         # Busca si el usuario ya existe por google_id o email
         cursor.execute("""
             SELECT id, nombre, email, avatar_url, proveedor, activo, created_at,
-                   onboarding_completado
+                   onboarding_completado, plan
             FROM usuarios
             WHERE google_id = %s OR email = %s
         """, (google_id, email))
@@ -212,6 +214,7 @@ async def login_google(payload: dict):
             usuario_avatar = avatar_url
             usuario_created = str(row[6])
             usuario_onboarding = bool(row[7])
+            usuario_plan = row[8]
         else:
             # Usuario nuevo — lo registra automáticamente
             cursor.execute("""
@@ -227,6 +230,7 @@ async def login_google(payload: dict):
             usuario_avatar = avatar_url
             usuario_created = str(new_row[1])
             usuario_onboarding = False  # usuario recién creado
+            usuario_plan = "free"       # el INSERT usa el default de la columna
 
         # Genera tokens propios — el frontend los maneja igual que el login normal
         access_token = create_access_token(usuario_id, usuario_email)
@@ -243,7 +247,8 @@ async def login_google(payload: dict):
                 avatar_url=usuario_avatar,
                 proveedor="google",
                 created_at=usuario_created,
-                onboarding_completado=usuario_onboarding
+                onboarding_completado=usuario_onboarding,
+                plan=usuario_plan
             )
         )
     except HTTPException:
@@ -324,7 +329,8 @@ def get_me(current_user: dict = Depends(get_current_user)):
         avatar_url=current_user.get("avatar_url"),
         proveedor=current_user["proveedor"],
         created_at=current_user["created_at"],
-        onboarding_completado=current_user["onboarding_completado"]
+        onboarding_completado=current_user["onboarding_completado"],
+        plan=current_user["plan"]
     )
 
 
@@ -390,6 +396,38 @@ def marcar_onboarding_completado(current_user: dict = Depends(get_current_user))
     except Exception as e:
         conn.rollback()
         logger.error(f"Error marcando onboarding completado: {e}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+    finally:
+        cursor.close()
+        release_connection(conn)
+
+
+# ══════════════════════════════════════════
+#  ACTIVAR PREMIUM (SIMULADO)
+# ══════════════════════════════════════════
+
+@router.put("/activar-premium")
+def activar_premium(current_user: dict = Depends(get_current_user)):
+    """
+    Pasa al usuario autenticado al plan Premium.
+    Es una simulación para la demo: no hay pasarela de pago, cualquier usuario
+    puede activarlo. Al integrar pagos, este endpoint debe quedar detrás de la
+    confirmación del pago (webhook), no abierto al usuario.
+    Es idempotente: activarlo de nuevo no cambia nada ni da error.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            UPDATE usuarios
+            SET plan = 'premium'
+            WHERE id = %s
+        """, (current_user["id"],))
+        conn.commit()
+        return {"mensaje": "Plan Premium activado"}
+    except Exception as e:
+        conn.rollback()
+        logger.error(f"Error activando premium: {e}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
     finally:
         cursor.close()

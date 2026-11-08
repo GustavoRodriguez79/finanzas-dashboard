@@ -96,6 +96,14 @@ export function AuthProvider({ children }) {
     );
   }, []);
 
+  // ─── Activar Premium (simulado) ───
+  // Igual que el onboarding: avisa al backend y actualiza el usuario en memoria.
+  // Si la llamada falla, lanza el error y el plan en pantalla no cambia.
+  const activarPremium = useCallback(async () => {
+    await authService.activarPremium();
+    setUsuario((actual) => (actual ? { ...actual, plan: "premium" } : actual));
+  }, []);
+
   // Valor que se comparte con todos los componentes hijos
   const value = {
     usuario,        // datos del usuario autenticado o null
@@ -105,6 +113,7 @@ export function AuthProvider({ children }) {
     register,
     logout,
     completarOnboarding,
+    activarPremium,
     isAuthenticated: !!usuario  // true si hay usuario logueado
   };
 

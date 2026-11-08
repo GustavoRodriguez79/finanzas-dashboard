@@ -99,6 +99,9 @@ export const authService = {
 
   // Marca el onboarding del usuario como completado
   completarOnboarding: () => api.put("/auth/onboarding-completado"),
+
+  // Activa el plan Premium (simulado, sin pago)
+  activarPremium: () => api.put("/auth/activar-premium"),
 };
 
 // ══════════════════════════════════════════
