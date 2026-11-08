@@ -1,0 +1,132 @@
+/* Gastos.css
+   Estilos propios de la página de Gastos: botón de exportar PDF (Premium) y su
+   modal. Los CSS del proyecto son globales, por eso todo lleva prefijo gastos-.
+   El resto de los estilos de la página siguen en Transacciones.css. */
+
+/* ─── Botón "Exportar PDF" (Premium) ───
+   Mismo formato que .btn-exportar pero con acento dorado. Va pegado al botón CSV,
+   que es el que empuja ambos a la derecha con margin-left: auto. */
+.gastos-btn-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 2px solid var(--warning);
+  border-radius: 8px;
+  color: var(--warning);
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.gastos-btn-premium:hover {
+  background: rgba(251, 191, 36, 0.1);
+}
+
+/* Chip dorado dentro del botón */
+.gastos-premium-chip {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0f172a;
+  background: var(--grad-ahorro);
+}
+
+/* ─── Modal ─── */
+.gastos-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.gastos-modal-premium {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px 28px 28px;
+  text-align: center;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--warning);
+  border-radius: var(--radio);
+  box-shadow: var(--shadow-card);
+}
+
+.gastos-modal-cerrar {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.gastos-modal-cerrar:hover {
+  color: var(--text);
+}
+
+.gastos-modal-icono {
+  font-size: 2.8rem;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.gastos-modal-premium h3 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+}
+
+.gastos-modal-premium p {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Preview borrosa: se intuye el contenido, pero no se puede leer ni copiar */
+.gastos-modal-preview {
+  margin-bottom: 20px;
+  padding: 16px;
+  text-align: left;
+  background: var(--card-inner);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+}
+
+.gastos-modal-preview-blur {
+  filter: blur(3px);
+  user-select: none;
+}
+
+.gastos-modal-preview-blur p {
+  margin: 0 0 6px;
+  color: var(--text);
+}
+
+.gastos-modal-preview-blur p:last-child {
+  margin-bottom: 0;
+}
+
+.gastos-modal-cta {
+  width: 100%;
+  padding: 11px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--grad-ahorro);
+  color: #0f172a;
+  font-weight: 700;
+  opacity: 0.5;
+  cursor: not-allowed;
+}

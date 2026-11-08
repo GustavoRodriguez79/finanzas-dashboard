@@ -321,6 +321,54 @@
   color: var(--text-secondary);
 }
 
+/* ─── Insight Premium (preview borrosa) ─── */
+.dash-premium-insight {
+  background: var(--card);
+  border-radius: var(--radio);
+  padding: 22px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+
+.dash-premium-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dash-premium-titulo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.dash-premium-chip {
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0f172a;
+  background: var(--grad-ahorro);
+}
+
+/* Borroso e inseleccionable: se ve qué se obtendría, pero no se puede leer ni copiar */
+.dash-premium-preview p {
+  margin: 0 0 10px;
+  color: var(--text);
+  line-height: 1.5;
+  filter: blur(4px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.dash-premium-preview p:last-child {
+  margin-bottom: 0;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
   .dashboard-graficos,

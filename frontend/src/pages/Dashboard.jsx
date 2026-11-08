@@ -341,6 +341,19 @@ function Dashboard() {
         </div>
       </div>
 
+      {/* Adelanto Premium: preview borrosa de un insight de ejemplo, sin muro de pago */}
+      <div className="dash-premium-insight">
+        <div className="dash-premium-header">
+          <span className="dash-premium-titulo">✨ Insight de la semana</span>
+          <span className="dash-premium-chip">Premium</span>
+        </div>
+        {/* aria-hidden: es texto de ejemplo, no debe leerlo un lector de pantalla */}
+        <div className="dash-premium-preview" aria-hidden="true">
+          <p>Tu mayor gasto esta semana fue en <strong>Entretenimiento</strong>, un 34% más que la semana anterior. Considerá revisar ese presupuesto.</p>
+          <p>Tus ingresos superaron tus gastos por 5 semanas consecutivas. ¡Vas muy bien!</p>
+        </div>
+      </div>
+
     </div>
   );
 }

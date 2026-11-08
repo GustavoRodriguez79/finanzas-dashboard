@@ -5,6 +5,7 @@
 import { useState, useEffect } from "react";
 import { gastosService } from "../services/api";
 import "./Transacciones.css";
+import "./Gastos.css";
 import EstadoVacio from "../components/EstadoVacio";
 import { descargarCSV } from "../utils/exportarCSV";
 
@@ -24,6 +25,7 @@ function Gastos() {
   const [cargando, setCargando] = useState(true);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [error, setError] = useState("");
+  const [mostrarModalPdf, setMostrarModalPdf] = useState(false);
 
   const hoy = new Date();
   const [filtroMes, setFiltroMes] = useState(hoy.getMonth() + 1);
@@ -160,6 +162,9 @@ function Gastos() {
           disabled={cargando || gastos.length === 0}
         >
           📥 Exportar CSV
+        </button>
+        <button className="gastos-btn-premium" onClick={() => setMostrarModalPdf(true)}>
+          📄 Exportar PDF <span className="gastos-premium-chip">✨ Premium</span>
         </button>
       </div>
 
@@ -300,6 +305,32 @@ function Gastos() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Modal Premium: muestra qué traería el PDF, sin bloquear nada */}
+      {mostrarModalPdf && (
+        <div className="gastos-modal-overlay" onClick={() => setMostrarModalPdf(false)}>
+          <div
+            className="gastos-modal-premium"
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="gastos-modal-cerrar" onClick={() => setMostrarModalPdf(false)} aria-label="Cerrar">✕</button>
+            <div className="gastos-modal-icono">📄</div>
+            <h3>Exportar reporte PDF</h3>
+            <p>Con Premium podés exportar un reporte completo en PDF con tus gastos, gráficos y resumen mensual.</p>
+            <div className="gastos-modal-preview">
+              {/* aria-hidden: datos de ejemplo, no deben leerse como reales */}
+              <div className="gastos-modal-preview-blur" aria-hidden="true">
+                <p>Reporte Noviembre 2026</p>
+                <p>Total gastos: $290.000</p>
+                <p>Categoría principal: Educación</p>
+              </div>
+            </div>
+            <button className="gastos-modal-cta" disabled>Próximamente</button>
+          </div>
         </div>
       )}
     </div>
