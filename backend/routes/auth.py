@@ -329,6 +329,45 @@ def get_me(current_user: dict = Depends(get_current_user)):
 
 
 # ══════════════════════════════════════════
+#  ESTADÍSTICAS DE USO (PERFIL)
+# ══════════════════════════════════════════
+
+@router.get("/estadisticas")
+def get_estadisticas(current_user: dict = Depends(get_current_user)):
+    """
+    Cuenta las transacciones del usuario autenticado para la página de Perfil.
+    Los gastos anulados no cuentan: siguen en el historial pero ya no son
+    movimientos vigentes.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "SELECT COUNT(*) FROM ingresos WHERE usuario_id = %s",
+            (current_user["id"],)
+        )
+        total_ingresos = cursor.fetchone()[0]
+
+        cursor.execute(
+            "SELECT COUNT(*) FROM gastos WHERE usuario_id = %s AND anulado = FALSE",
+            (current_user["id"],)
+        )
+        total_gastos = cursor.fetchone()[0]
+
+        return {
+            "total_ingresos": total_ingresos,
+            "total_gastos": total_gastos,
+            "total_transacciones": total_ingresos + total_gastos
+        }
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas: {e}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+    finally:
+        cursor.close()
+        release_connection(conn)
+
+
+# ══════════════════════════════════════════
 #  ONBOARDING COMPLETADO
 # ══════════════════════════════════════════
 

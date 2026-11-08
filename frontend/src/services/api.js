@@ -94,6 +94,9 @@ export const authService = {
   // Datos del usuario actual
   getMe: () => api.get("/auth/me"),
 
+  // Conteo de ingresos, gastos y transacciones totales (página de Perfil)
+  estadisticasUsuario: () => api.get("/auth/estadisticas"),
+
   // Marca el onboarding del usuario como completado
   completarOnboarding: () => api.put("/auth/onboarding-completado"),
 };

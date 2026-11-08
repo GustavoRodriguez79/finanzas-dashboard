@@ -1,0 +1,171 @@
+/* Perfil.css
+   Estilos de la página de perfil. Todas las clases llevan el prefijo perfil-
+   para no pisar estilos globales (los CSS del proyecto son globales). */
+
+.perfil-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.perfil-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+/* ─── Identidad ─── */
+.perfil-identidad {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.perfil-foto {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.perfil-foto-inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-dim);
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.perfil-datos {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.perfil-nombre {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.perfil-email {
+  margin: 0;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.perfil-badge {
+  margin-top: 6px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.perfil-badge.google {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-dim);
+}
+
+/* ─── Estadísticas ─── */
+.perfil-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.perfil-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+}
+
+.perfil-stat-icono {
+  font-size: 1.5rem;
+}
+
+.perfil-stat-valor {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.perfil-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+/* ─── Premium ─── */
+.perfil-premium-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.perfil-premium-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.perfil-chip {
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0f172a;
+  background: var(--grad-ahorro);
+}
+
+.perfil-premium-texto {
+  margin: 12px 0 16px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.perfil-btn-proximamente {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-inner);
+  color: var(--text-secondary);
+  font-weight: 700;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 480px) {
+  .perfil-page {
+    padding: 16px 14px;
+  }
+  .perfil-identidad {
+    flex-direction: column;
+    text-align: center;
+  }
+  .perfil-datos {
+    align-items: center;
+  }
+}

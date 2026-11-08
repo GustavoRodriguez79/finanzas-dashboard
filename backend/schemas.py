@@ -47,7 +47,10 @@ class UsuarioResponse(BaseModel):
     email: str
     avatar_url: Optional[str]
     proveedor: str
-    created_at: str
+    # datetime (no str): Pydantic lo serializa en ISO 8601 ("2026-11-05T14:32:10"),
+    # que new Date() interpreta igual en todos los navegadores. Acepta el
+    # str(datetime) con espacio que arman las rutas de auth.
+    created_at: datetime
     # Default False: un usuario recién registrado siempre arranca sin onboarding
     onboarding_completado: bool = False
 

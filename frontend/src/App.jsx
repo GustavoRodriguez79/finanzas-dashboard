@@ -28,6 +28,7 @@ import Gastos from "./pages/Gastos";
 import Presupuesto from "./pages/Presupuesto";
 import ResumenAnual from "./pages/ResumenAnual";
 import AhorrosUSD from "./pages/AhorrosUSD";
+import Perfil from "./pages/Perfil";
 
 // Google OAuth Client ID — se configura en .env
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
@@ -40,6 +41,7 @@ const PAGE_TITLES = {
   "/presupuesto": "Presupuesto",
   "/resumen": "Resumen Anual",
   "/ahorros-usd": "Ahorros USD 🇺🇸",
+  "/perfil": "Perfil",
 };
 
 // Envuelve las páginas privadas con Sidebar + Topbar.
@@ -129,6 +131,15 @@ function App() {
                   element={
                     <PrivateRoute>
                       <AhorrosUSD />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route
+                  path="/perfil"
+                  element={
+                    <PrivateRoute>
+                      <Perfil />
                     </PrivateRoute>
                   }
                 />

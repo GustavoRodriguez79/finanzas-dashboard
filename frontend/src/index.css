@@ -230,6 +230,18 @@ a {
   color: var(--primary);
   flex-shrink: 0;
 }
+/* Foto de Google en el sidebar; la inicial (.sidebar-avatar-iniciales) usa el mismo tamaño */
+.sidebar-avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.sidebar-avatar-iniciales {
+  width: 40px;
+  height: 40px;
+}
 .sidebar-username {
   font-size: 0.85rem;
   font-weight: 600;

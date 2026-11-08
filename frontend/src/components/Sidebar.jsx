@@ -26,6 +26,12 @@ export default function Sidebar({ isOpen, onClose }) {
     onClose();
   };
 
+  // Lleva al Perfil y cierra el sidebar (en mobile es un panel que tapa la página)
+  const irAlPerfil = () => {
+    navigate("/perfil");
+    onClose();
+  };
+
   const inicial = usuario?.nombre
     ? usuario.nombre.charAt(0).toUpperCase()
     : usuario?.email?.charAt(0).toUpperCase() || "?";
@@ -91,8 +97,34 @@ export default function Sidebar({ isOpen, onClose }) {
         </nav>
 
         <div className="sidebar-footer">
-          <div className="sidebar-user">
-            <div className="sidebar-avatar">{inicial}</div>
+          {/* Todo el bloque lleva al Perfil. role/tabIndex/onKeyDown: accesible con teclado. */}
+          <div
+            className="sidebar-user"
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+            onClick={irAlPerfil}
+            onKeyDown={(e) => e.key === "Enter" && irAlPerfil()}
+          >
+            {usuario?.avatar_url && (
+              <img
+                src={usuario.avatar_url}
+                alt={usuario.nombre}
+                referrerPolicy="no-referrer"
+                // Si la foto no carga, se oculta y se muestra la inicial (el hermano siguiente)
+                onError={(e) => {
+                  e.target.style.display = "none";
+                  e.target.nextSibling.style.display = "flex";
+                }}
+                className="sidebar-avatar-img"
+              />
+            )}
+            <div
+              className="sidebar-avatar sidebar-avatar-iniciales"
+              style={{ display: usuario?.avatar_url ? "none" : "flex" }}
+            >
+              {inicial}
+            </div>
             <div>
               <div className="sidebar-username">
                 {usuario?.nombre || usuario?.email?.split("@")[0] || "Usuario"}
