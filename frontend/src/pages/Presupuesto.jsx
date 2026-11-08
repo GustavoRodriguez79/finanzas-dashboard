@@ -38,23 +38,46 @@ function Presupuesto() {
     anio: hoy.getFullYear()
   });
 
-  useEffect(() => {
-    cargarPresupuestos();
-  }, [filtroMes, filtroAnio]);
+  // Contador para recargar la lista tras crear o eliminar un presupuesto, sin tocar los filtros
+  const [recarga, setRecarga] = useState(0);
 
-  const cargarPresupuestos = async () => {
+  // Carga los presupuestos cuando cambia algún filtro o se pide una recarga.
+  // La función vive dentro del efecto (solo se usa acá). El loader lo activan
+  // handleFiltro y recargarPresupuestos: setear estado de forma síncrona dentro de
+  // un efecto provoca renders en cascada. "cancelado" descarta respuestas de
+  // filtros anteriores si el usuario los cambia antes de que llegue la respuesta.
+  useEffect(() => {
+    let cancelado = false;
+
+    const cargarPresupuestos = async () => {
+      try {
+        const respuesta = await presupuestoService.getAll({
+          mes: filtroMes,
+          anio: filtroAnio
+        });
+        if (!cancelado) setPresupuestos(respuesta.data);
+      } catch {
+        if (!cancelado) setError("Error al cargar presupuestos.");
+      } finally {
+        if (!cancelado) setCargando(false);
+      }
+    };
+
+    cargarPresupuestos();
+    return () => {
+      cancelado = true;
+    };
+  }, [filtroMes, filtroAnio, recarga]);
+
+  const recargarPresupuestos = () => {
     setCargando(true);
-    try {
-      const respuesta = await presupuestoService.getAll({
-        mes: filtroMes,
-        anio: filtroAnio
-      });
-      setPresupuestos(respuesta.data);
-    } catch {
-      setError("Error al cargar presupuestos.");
-    } finally {
-      setCargando(false);
-    }
+    setRecarga((n) => n + 1);
+  };
+
+  // Cambio de filtro: muestra el loader y aplica el valor
+  const handleFiltro = (setter) => (e) => {
+    setCargando(true);
+    setter(Number(e.target.value));
   };
 
   const handleChange = (e) => {
@@ -77,7 +100,7 @@ function Presupuesto() {
         anio: hoy.getFullYear()
       });
       setMostrarForm(false);
-      cargarPresupuestos();
+      recargarPresupuestos();
     } catch {
       setError("Error al guardar el presupuesto.");
     }
@@ -87,7 +110,7 @@ function Presupuesto() {
     if (!confirm("¿Eliminar este presupuesto?")) return;
     try {
       await presupuestoService.delete(id);
-      cargarPresupuestos();
+      recargarPresupuestos();
     } catch {
       setError("Error al eliminar el presupuesto.");
     }
@@ -116,7 +139,7 @@ function Presupuesto() {
       <div className="filtros-bar">
         <select
           value={filtroMes}
-          onChange={(e) => setFiltroMes(Number(e.target.value))}
+          onChange={handleFiltro(setFiltroMes)}
         >
           {MESES.slice(1).map((nombre, i) => (
             <option key={i + 1} value={i + 1}>{nombre}</option>
@@ -124,7 +147,7 @@ function Presupuesto() {
         </select>
         <select
           value={filtroAnio}
-          onChange={(e) => setFiltroAnio(Number(e.target.value))}
+          onChange={handleFiltro(setFiltroAnio)}
         >
           {ANIOS_CON_PROXIMO.map((a) => (
             <option key={a} value={a}>{a}</option>

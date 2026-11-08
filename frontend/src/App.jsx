@@ -13,7 +13,8 @@ import {
 } from "react-router-dom";
 import { useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./hooks/useAuth";
 import { ThemeProvider } from "./context/ThemeContext";
 import PrivateRoute from "./components/PrivateRoute";
 import Sidebar from "./components/Sidebar";

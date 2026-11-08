@@ -5,7 +5,7 @@
 // en localStorage como respaldo y, al llegar a 3/3, avisa al backend.
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "./useAuth";
 import {
   presupuestoService,
   ingresosService,

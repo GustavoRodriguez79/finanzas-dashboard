@@ -3,7 +3,7 @@
 // de uso y un adelanto de la función Premium de alertas por email.
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { authService } from "../services/api";
 import "./Perfil.css";
 

@@ -22,21 +22,45 @@ function ResumenAnual() {
   const [error, setError] = useState("");
   const [anio, setAnio] = useState(new Date().getFullYear());
 
-  useEffect(() => {
-    cargarResumen();
-  }, [anio]);
+  // Contador para forzar una recarga manual ("Reintentar") sin cambiar el año
+  const [recarga, setRecarga] = useState(0);
 
-  const cargarResumen = async () => {
+  // Carga el resumen cuando cambia el año o se pide una recarga.
+  // La función vive dentro del efecto (solo se usa acá). El loader lo activan los
+  // manejadores de abajo: setear estado de forma síncrona dentro de un efecto
+  // provoca renders en cascada. "cancelado" descarta respuestas de un año anterior
+  // si el usuario cambia de año antes de que llegue la respuesta.
+  useEffect(() => {
+    let cancelado = false;
+
+    const cargarResumen = async () => {
+      try {
+        const respuesta = await resumenService.getAnual({ anio });
+        if (!cancelado) setResumen(respuesta.data);
+      } catch {
+        if (!cancelado) setError("Error al cargar el resumen anual.");
+      } finally {
+        if (!cancelado) setCargando(false);
+      }
+    };
+
+    cargarResumen();
+    return () => {
+      cancelado = true;
+    };
+  }, [anio, recarga]);
+
+  // Cambio de año: muestra el loader y limpia el error antes de recargar
+  const handleAnio = (e) => {
     setCargando(true);
     setError("");
-    try {
-      const respuesta = await resumenService.getAnual({ anio });
-      setResumen(respuesta.data);
-    } catch {
-      setError("Error al cargar el resumen anual.");
-    } finally {
-      setCargando(false);
-    }
+    setAnio(Number(e.target.value));
+  };
+
+  const reintentarResumen = () => {
+    setCargando(true);
+    setError("");
+    setRecarga((n) => n + 1);
   };
 
   if (cargando) {
@@ -52,7 +76,7 @@ function ResumenAnual() {
     return (
       <div className="resumen-error">
         <p>{error}</p>
-        <button onClick={cargarResumen}>Reintentar</button>
+        <button onClick={reintentarResumen}>Reintentar</button>
       </div>
     );
   }
@@ -81,7 +105,7 @@ function ResumenAnual() {
         </div>
         <select
           value={anio}
-          onChange={(e) => setAnio(Number(e.target.value))}
+          onChange={handleAnio}
           className="anio-selector"
         >
           {ANIOS_HISTORICOS.map((a) => (

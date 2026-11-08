@@ -3,11 +3,11 @@
 // Provee el estado del usuario y funciones de login/logout
 // a todos los componentes sin necesidad de pasar props manualmente.
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { authService } from "../services/api";
+import { AuthContext } from "./AuthContextValue";
 
-// Crea el contexto — valor inicial vacío
-const AuthContext = createContext(null);
+// El hook useAuth vive en hooks/useAuth.js (ver AuthContextValue.js para el porqué)
 
 // ─── Provider ───
 // Envuelve toda la app y provee el estado de autenticación
@@ -113,15 +113,4 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-// ─── Hook personalizado ───
-// Permite usar el contexto fácilmente en cualquier componente:
-// const { usuario, login, logout } = useAuth();
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe usarse dentro de AuthProvider");
-  }
-  return context;
 }

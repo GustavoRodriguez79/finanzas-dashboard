@@ -1,6 +1,6 @@
 // components/Sidebar.jsx
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../context/ThemeContext";
 
 // Las rutas coinciden con las de App.jsx (/dashboard y /resumen se mantienen).

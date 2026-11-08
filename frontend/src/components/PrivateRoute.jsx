@@ -4,7 +4,7 @@
 // Se usa en App.jsx envolviendo las rutas que requieren sesión.
 
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 
 function PrivateRoute({ children }) {
   const { usuario, cargando } = useAuth();

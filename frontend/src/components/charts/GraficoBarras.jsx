@@ -13,6 +13,42 @@ import {
   ResponsiveContainer
 } from "recharts";
 
+// Definidos a nivel de módulo (no dentro de GraficoBarras): un componente creado
+// dentro de otro se recrea en cada render y pierde su estado.
+
+// Formato personalizado del tooltip
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        background: "var(--card)",
+        border: "1px solid var(--border)",
+        borderRadius: 8,
+        padding: "10px 14px",
+        fontSize: "0.85rem",
+        color: "var(--text)"
+      }}>
+        <p style={{ fontWeight: 700, marginBottom: 6 }}>{label}</p>
+        {payload.map((entry, i) => (
+          <p key={i} style={{ color: entry.color }}>
+            {entry.name}: ${entry.value.toLocaleString("es-AR", {
+              minimumFractionDigits: 2
+            })}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+// Formatea los números en el eje Y
+const formatearEje = (valor) => {
+  if (valor >= 1000000) return `$${(valor / 1000000).toFixed(1)}M`;
+  if (valor >= 1000) return `$${(valor / 1000).toFixed(0)}K`;
+  return `$${valor}`;
+};
+
 function GraficoBarras({ datos }) {
   if (!datos || datos.length === 0) {
     return (
@@ -28,39 +64,6 @@ function GraficoBarras({ datos }) {
       </div>
     );
   }
-
-  // Formato personalizado del tooltip
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 8,
-          padding: "10px 14px",
-          fontSize: "0.85rem",
-          color: "var(--text)"
-        }}>
-          <p style={{ fontWeight: 700, marginBottom: 6 }}>{label}</p>
-          {payload.map((entry, i) => (
-            <p key={i} style={{ color: entry.color }}>
-              {entry.name}: ${entry.value.toLocaleString("es-AR", {
-                minimumFractionDigits: 2
-              })}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Formatea los números en el eje Y
-  const formatearEje = (valor) => {
-    if (valor >= 1000000) return `$${(valor / 1000000).toFixed(1)}M`;
-    if (valor >= 1000) return `$${(valor / 1000).toFixed(0)}K`;
-    return `$${valor}`;
-  };
 
   return (
     <ResponsiveContainer width="100%" height={280}>

@@ -18,6 +18,32 @@ const COLORES = [
   "#22d3ee", "#4ade80"
 ];
 
+// Definido a nivel de módulo (no dentro de GraficoTorta): un componente creado
+// dentro de otro se recrea en cada render y pierde su estado.
+// Formato personalizado del tooltip
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        background: "var(--card)",
+        border: "1px solid var(--border)",
+        borderRadius: 8,
+        padding: "10px 14px",
+        fontSize: "0.85rem",
+        color: "var(--text)"
+      }}>
+        <p style={{ fontWeight: 700 }}>{payload[0].name}</p>
+        <p style={{ color: "var(--primary)" }}>
+          ${payload[0].value.toLocaleString("es-AR", {
+            minimumFractionDigits: 2
+          })}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 function GraficoTorta({ datos }) {
   // Si no hay datos muestra un mensaje
   if (!datos || datos.length === 0) {
@@ -40,30 +66,6 @@ function GraficoTorta({ datos }) {
     name: item.categoria,
     value: item.total,
   }));
-
-  // Formato personalizado del tooltip
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 8,
-          padding: "10px 14px",
-          fontSize: "0.85rem",
-          color: "var(--text)"
-        }}>
-          <p style={{ fontWeight: 700 }}>{payload[0].name}</p>
-          <p style={{ color: "var(--primary)" }}>
-            ${payload[0].value.toLocaleString("es-AR", {
-              minimumFractionDigits: 2
-            })}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <ResponsiveContainer width="100%" height={280}>

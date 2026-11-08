@@ -35,23 +35,46 @@ function Ingresos() {
     recurrente: false
   });
 
-  useEffect(() => {
-    cargarIngresos();
-  }, [filtroMes, filtroAnio]);
+  // Contador para recargar la lista tras crear o eliminar un ingreso, sin tocar los filtros
+  const [recarga, setRecarga] = useState(0);
 
-  const cargarIngresos = async () => {
+  // Carga los ingresos cuando cambia algún filtro o se pide una recarga.
+  // La función vive dentro del efecto (solo se usa acá). El loader lo activan
+  // handleFiltro y recargarIngresos: setear estado de forma síncrona dentro de un
+  // efecto provoca renders en cascada. "cancelado" descarta respuestas de filtros
+  // anteriores si el usuario los cambia antes de que llegue la respuesta.
+  useEffect(() => {
+    let cancelado = false;
+
+    const cargarIngresos = async () => {
+      try {
+        const respuesta = await ingresosService.getAll({
+          mes: filtroMes,
+          anio: filtroAnio
+        });
+        if (!cancelado) setIngresos(respuesta.data);
+      } catch {
+        if (!cancelado) setError("Error al cargar ingresos.");
+      } finally {
+        if (!cancelado) setCargando(false);
+      }
+    };
+
+    cargarIngresos();
+    return () => {
+      cancelado = true;
+    };
+  }, [filtroMes, filtroAnio, recarga]);
+
+  const recargarIngresos = () => {
     setCargando(true);
-    try {
-      const respuesta = await ingresosService.getAll({
-        mes: filtroMes,
-        anio: filtroAnio
-      });
-      setIngresos(respuesta.data);
-    } catch {
-      setError("Error al cargar ingresos.");
-    } finally {
-      setCargando(false);
-    }
+    setRecarga((n) => n + 1);
+  };
+
+  // Cambio de filtro: muestra el loader y aplica el valor
+  const handleFiltro = (setter) => (e) => {
+    setCargando(true);
+    setter(Number(e.target.value));
   };
 
   const handleChange = (e) => {
@@ -74,7 +97,7 @@ function Ingresos() {
         recurrente: false
       });
       setMostrarForm(false);
-      cargarIngresos();
+      recargarIngresos();
     } catch {
       setError("Error al crear el ingreso.");
     }
@@ -84,7 +107,7 @@ function Ingresos() {
     if (!confirm("¿Eliminar este ingreso?")) return;
     try {
       await ingresosService.delete(id);
-      cargarIngresos();
+      recargarIngresos();
     } catch {
       setError("Error al eliminar el ingreso.");
     }
@@ -131,12 +154,12 @@ function Ingresos() {
 
       {/* Filtros */}
       <div className="filtros-bar">
-        <select value={filtroMes} onChange={(e) => setFiltroMes(Number(e.target.value))}>
+        <select value={filtroMes} onChange={handleFiltro(setFiltroMes)}>
           {MESES.slice(1).map((nombre, i) => (
             <option key={i + 1} value={i + 1}>{nombre}</option>
           ))}
         </select>
-        <select value={filtroAnio} onChange={(e) => setFiltroAnio(Number(e.target.value))}>
+        <select value={filtroAnio} onChange={handleFiltro(setFiltroAnio)}>
           {ANIOS_HISTORICOS.map((a) => (
             <option key={a} value={a}>{a}</option>
           ))}
