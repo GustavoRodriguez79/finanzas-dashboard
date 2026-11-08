@@ -236,12 +236,23 @@ function Presupuesto() {
                 </span>
               </div>
 
+              {/* Proyección a fin de mes: el backend la envía solo para el mes en curso */}
+              {p.proyeccion != null && (
+                <div
+                  className={`presupuesto-proyeccion ${
+                    p.proyeccion > p.monto_limite ? "excede" : ""
+                  }`}
+                >
+                  Proyección: ${p.proyeccion.toLocaleString("es-AR", {
+                    maximumFractionDigits: 0
+                  })}
+                </div>
+              )}
+
               {/* Alerta */}
               {p.alerta && (
                 <div className="presupuesto-alerta">
-                  {p.porcentaje >= 100
-                    ? "⛔ Límite superado"
-                    : "⚠️ Cerca del límite"}
+                  {p.superado ? "🚨 Límite superado" : "⚠️ 80% alcanzado"}
                 </div>
               )}
 

@@ -103,6 +103,17 @@
   color: var(--text-secondary);
 }
 
+/* Proyección a fin de mes (solo mes en curso). Roja si supera el límite. */
+.presupuesto-proyeccion {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.presupuesto-proyeccion.excede {
+  color: var(--danger);
+  font-weight: 600;
+}
+
 /* Alerta */
 .presupuesto-alerta {
   font-size: 0.85rem;

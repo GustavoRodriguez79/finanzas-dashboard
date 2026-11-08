@@ -8,10 +8,26 @@ from typing import Optional
 from database import get_connection, release_connection
 from schemas import PresupuestoCreate, PresupuestoResponse
 from auth import get_current_user
+from datetime import date
+import calendar
 import logging
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+
+def calcular_proyeccion(gastado: float, mes: int, anio: int) -> Optional[float]:
+    """
+    Proyecta el gasto de fin de mes: (gastado / días_transcurridos) * días_del_mes.
+    Solo tiene sentido para el mes en curso: en meses pasados el gasto ya es
+    definitivo y en los futuros no hay ritmo que extrapolar, así que devuelve None.
+    Usa los días reales del mes (28-31), no una aproximación de 30.
+    """
+    hoy = date.today()
+    if mes != hoy.month or anio != hoy.year:
+        return None
+    dias_del_mes = calendar.monthrange(anio, mes)[1]
+    return round(gastado / hoy.day * dias_del_mes, 2)
 
 
 # ══════════════════════════════════════════
@@ -77,7 +93,9 @@ def obtener_presupuestos(
                 anio=p[4],
                 gastado=gastado,
                 porcentaje=round(porcentaje, 1),
-                alerta=alerta
+                alerta=alerta,
+                superado=porcentaje >= 100,
+                proyeccion=calcular_proyeccion(gastado, p[3], p[4])
             ))
 
         return resultado
@@ -149,7 +167,9 @@ def crear_presupuesto(
             anio=row[4],
             gastado=gastado,
             porcentaje=round(porcentaje, 1),
-            alerta=alerta
+            alerta=alerta,
+            superado=porcentaje >= 100,
+            proyeccion=calcular_proyeccion(gastado, row[3], row[4])
         )
     except Exception as e:
         conn.rollback()

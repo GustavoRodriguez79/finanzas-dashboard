@@ -198,6 +198,9 @@ class PresupuestoResponse(BaseModel):
     gastado: Optional[float] = 0     # Cuánto se gastó en esa categoría
     porcentaje: Optional[float] = 0  # % del presupuesto usado
     alerta: Optional[bool] = False   # True si superó el 80% del límite
+    superado: Optional[bool] = False # True si llegó al 100% del límite
+    # Gasto proyectado a fin de mes; None si no es el mes en curso
+    proyeccion: Optional[float] = None
 
 # ══════════════════════════════════════════
 #  GASTOS RECURRENTES
