@@ -127,6 +127,11 @@
   background: var(--grad-ahorro);
   color: #0f172a;
   font-weight: 700;
+  cursor: pointer;
+}
+
+/* Deshabilitado solo mientras se activa el plan */
+.gastos-modal-cta:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

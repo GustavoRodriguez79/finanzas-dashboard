@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { gastosService } from "../services/api";
+import { useAuth } from "../hooks/useAuth";
 import "./Transacciones.css";
 import "./Gastos.css";
 import EstadoVacio from "../components/EstadoVacio";
@@ -27,6 +28,12 @@ function Gastos() {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [error, setError] = useState("");
   const [mostrarModalPdf, setMostrarModalPdf] = useState(false);
+
+  const { usuario, activarPremium } = useAuth();
+  const esPremium = usuario?.plan === "premium";
+  const [generandoPdf, setGenerandoPdf] = useState(false);
+  const [activandoDesdeModal, setActivandoDesdeModal] = useState(false);
+  const [errorModal, setErrorModal] = useState("");
 
   const hoy = new Date();
   const [filtroMes, setFiltroMes] = useState(hoy.getMonth() + 1);
@@ -137,6 +144,46 @@ function Gastos() {
 
   const totalMes = gastos.reduce((acc, g) => acc + g.monto, 0);
 
+  // Premium descarga el PDF directo; Free ve el modal con la preview.
+  // El módulo del PDF se importa recién acá para que jspdf no pese en la carga inicial.
+  const handleExportarPDF = async () => {
+    if (!esPremium) {
+      setErrorModal("");
+      setMostrarModalPdf(true);
+      return;
+    }
+    setGenerandoPdf(true);
+    try {
+      const { exportarGastosPDF } = await import("../utils/exportarPDF");
+      await exportarGastosPDF({
+        gastos,
+        mes: filtroMes,
+        anio: filtroAnio,
+        totalMes
+      });
+    } catch {
+      // El error de la página solo se ve dentro del formulario, por eso un alert
+      alert("No se pudo generar el PDF. Intentá de nuevo.");
+    } finally {
+      setGenerandoPdf(false);
+    }
+  };
+
+  // Desde el modal: activa Premium y lo cierra. Al actualizarse el plan en el
+  // contexto, el botón de la barra ya no muestra el chip y exporta directo.
+  const handleActivarDesdeModal = async () => {
+    setActivandoDesdeModal(true);
+    setErrorModal("");
+    try {
+      await activarPremium();
+      setMostrarModalPdf(false);
+    } catch {
+      setErrorModal("No se pudo activar. Intentá de nuevo.");
+    } finally {
+      setActivandoDesdeModal(false);
+    }
+  };
+
   return (
     <div className="transacciones-page">
 
@@ -187,8 +234,13 @@ function Gastos() {
         >
           📥 Exportar CSV
         </button>
-        <button className="gastos-btn-premium" onClick={() => setMostrarModalPdf(true)}>
-          📄 Exportar PDF <span className="gastos-premium-chip">✨ Premium</span>
+        <button
+          className="gastos-btn-premium"
+          onClick={handleExportarPDF}
+          disabled={generandoPdf}
+        >
+          {generandoPdf ? "Generando..." : "📄 Exportar PDF"}{" "}
+          {!esPremium && <span className="gastos-premium-chip">✨ Premium</span>}
         </button>
       </div>
 
@@ -353,7 +405,14 @@ function Gastos() {
                 <p>Categoría principal: Educación</p>
               </div>
             </div>
-            <button className="gastos-modal-cta" disabled>Próximamente</button>
+            {errorModal && <div className="form-error">{errorModal}</div>}
+            <button
+              className="gastos-modal-cta"
+              onClick={handleActivarDesdeModal}
+              disabled={activandoDesdeModal}
+            >
+              {activandoDesdeModal ? "Activando..." : "✨ Activar Premium (gratis en demo)"}
+            </button>
           </div>
         </div>
       )}
