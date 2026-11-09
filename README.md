@@ -10,33 +10,7 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 ![Backend](https://img.shields.io/badge/Backend-Deployed-brightgreen)
 ![Frontend](https://img.shields.io/badge/Frontend-Deployed-brightgreen)
 
----
-
-## 📸 Vista previa
-
-### Login
-
-![Login](docs/images/login.png)
-
-### Dashboard principal
-
-![Dashboard](docs/images/dashboard.png)
-
-### Ingresos
-
-![Ingresos](docs/images/ingresos.png)
-
-### Gastos
-
-![Gastos](docs/images/gastos.png)
-
-### Presupuesto
-
-![Presupuesto](docs/images/presupuesto.png)
-
-### Resumen anual
-
-![Resumen Anual](docs/images/resumen-anual.png)
+🌐 **[Ver app en producción → finanzas-dashboard-gustavo.netlify.app](https://finanzas-dashboard-gustavo.netlify.app)**
 
 ---
 
@@ -47,60 +21,64 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 - **Autenticación:** JWT · bcrypt · Google OAuth
 - **Frontend:** React 18 · Vite · Axios · Recharts · React Router
 - **Deploy:** Railway (backend) · Supabase (PostgreSQL) · Netlify (frontend)
-- **Otros:** python-dotenv · Pydantic · passlib · ESLint · google-auth
+- **Otros:** python-dotenv · Pydantic · passlib · ESLint · google-auth · jsPDF
 
 ---
 
 ## 📁 Estructura del proyecto
 
-```
 finanzas-dashboard/
 ├── backend/
-│   ├── main.py              # Entrada de la app FastAPI
-│   ├── database.py          # Pool de conexiones PostgreSQL
-│   ├── models.py            # Modelos de datos y categorías
-│   ├── schemas.py           # Validaciones Pydantic
-│   ├── auth.py              # JWT, bcrypt y Google OAuth
-│   ├── init.sql             # Creación de tablas
-│   ├── requirements.txt     # Dependencias Python
-│   └── routes/
-│       ├── auth.py          # Registro, login, logout, Google
-│       ├── ingresos.py      # CRUD ingresos
-│       ├── gastos.py        # CRUD gastos con anulación bancaria
-│       ├── presupuesto.py   # Presupuesto mensual con alertas
-│       ├── resumen.py       # Dashboard y resumen anual
-│       └── ahorros_usd.py   # CRUD ahorros en USD
+│ ├── main.py # Entrada de la app FastAPI
+│ ├── database.py # Pool de conexiones PostgreSQL
+│ ├── models.py # Modelos de datos y categorías
+│ ├── schemas.py # Validaciones Pydantic
+│ ├── auth.py # JWT, bcrypt y Google OAuth
+│ ├── init.sql # Creación de tablas
+│ ├── requirements.txt # Dependencias Python
+│ └── routes/
+│ ├── auth.py # Registro, login, logout, Google, Premium
+│ ├── ingresos.py # CRUD ingresos
+│ ├── gastos.py # CRUD gastos con anulación bancaria
+│ ├── presupuesto.py # Presupuesto mensual con alertas
+│ ├── resumen.py # Dashboard y resumen anual
+│ └── ahorros_usd.py # CRUD ahorros en USD
 ├── frontend/
-│   ├── public/
-│   └── src/
-│       ├── components/
-│       │   ├── charts/
-│       │   │   ├── GraficoTorta.jsx    # Gráfico donut por categoría
-│       │   │   └── GraficoBarras.jsx   # Comparativa ingresos/gastos
-│       │   ├── Sidebar.jsx             # Navegación lateral fija con íconos
-│       │   ├── Topbar.jsx              # Barra superior con título y toggle de tema
-│       │   └── PrivateRoute.jsx        # Protección de rutas
-│       ├── context/
-│       │   ├── AuthContext.jsx         # Estado global de autenticación
-│       │   └── ThemeContext.jsx        # Estado global de tema oscuro/claro
-│       ├── pages/
-│       │   ├── Login.jsx               # Login con email o Google
-│       │   ├── Register.jsx            # Registro con email o Google
-│       │   ├── Dashboard.jsx           # Resumen mensual con gráficos
-│       │   ├── Ingresos.jsx            # CRUD ingresos
-│       │   ├── Gastos.jsx              # CRUD gastos
-│       │   ├── Presupuesto.jsx         # Presupuesto con alertas
-│       │   ├── ResumenAnual.jsx        # Balance anual
-│       │   └── AhorrosUSD.jsx          # CRUD ahorros en dólares
-│       ├── services/
-│       │   └── api.js                  # Axios + interceptores JWT
-│       ├── App.jsx                     # Router, rutas y AppShell
-│       └── main.jsx                    # Punto de entrada
+│ ├── public/
+│ └── src/
+│ ├── components/
+│ │ ├── charts/
+│ │ │ ├── GraficoTorta.jsx # Gráfico donut por categoría
+│ │ │ └── GraficoBarras.jsx # Comparativa ingresos/gastos
+│ │ ├── Sidebar.jsx # Navegación lateral fija con íconos
+│ │ ├── Topbar.jsx # Barra superior con título y toggle de tema
+│ │ └── PrivateRoute.jsx # Protección de rutas
+│ ├── context/
+│ │ ├── AuthContext.jsx # Estado global de autenticación
+│ │ ├── AuthContextValue.js # Objeto de contexto
+│ │ └── ThemeContext.jsx # Estado global de tema oscuro/claro
+│ ├── hooks/
+│ │ └── useAuth.js # Hook de autenticación
+│ ├── pages/
+│ │ ├── Login.jsx # Login con email o Google
+│ │ ├── Register.jsx # Registro con email o Google
+│ │ ├── Dashboard.jsx # Resumen mensual con gráficos
+│ │ ├── Ingresos.jsx # CRUD ingresos
+│ │ ├── Gastos.jsx # CRUD gastos + exportar CSV/PDF
+│ │ ├── Presupuesto.jsx # Presupuesto con alertas
+│ │ ├── ResumenAnual.jsx # Balance anual
+│ │ ├── Perfil.jsx # Perfil de usuario y plan Premium
+│ │ └── AhorrosUSD.jsx # CRUD ahorros en dólares
+│ ├── services/
+│ │ └── api.js # Axios + interceptores JWT
+│ ├── utils/
+│ │ ├── anios.js # Array de años dinámico
+│ │ └── exportarPDF.js # Generación de PDF con jsPDF
+│ ├── App.jsx # Router, rutas y AppShell
+│ └── main.jsx # Punto de entrada
 ├── docs/
-│   └── images/
 ├── .gitignore
 └── README.md
-```
 
 ---
 
@@ -117,6 +95,7 @@ CREATE TABLE usuarios (
     avatar_url VARCHAR(500),
     proveedor VARCHAR(20) DEFAULT 'local',
     activo BOOLEAN DEFAULT TRUE,
+    plan VARCHAR(20) DEFAULT 'free' NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -196,14 +175,16 @@ CREATE TABLE ahorros_usd (
 
 ### Autenticación
 
-| Método | Ruta             | Descripción                     | Auth |
-| ------ | ---------------- | ------------------------------- | ---- |
-| POST   | `/auth/register` | Registro con email y contraseña | ❌   |
-| POST   | `/auth/login`    | Login → JWT + refresh token     | ❌   |
-| POST   | `/auth/google`   | Login con Google OAuth          | ❌   |
-| POST   | `/auth/refresh`  | Renovar access token            | ❌   |
-| POST   | `/auth/logout`   | Cerrar sesión                   | ✅   |
-| GET    | `/auth/me`       | Datos del usuario actual        | ✅   |
+| Método | Ruta                    | Descripción                     | Auth |
+| ------ | ----------------------- | ------------------------------- | ---- |
+| POST   | `/auth/register`        | Registro con email y contraseña | ❌   |
+| POST   | `/auth/login`           | Login → JWT + refresh token     | ❌   |
+| POST   | `/auth/google`          | Login con Google OAuth          | ❌   |
+| POST   | `/auth/refresh`         | Renovar access token            | ❌   |
+| POST   | `/auth/logout`          | Cerrar sesión                   | ✅   |
+| GET    | `/auth/me`              | Datos del usuario actual        | ✅   |
+| GET    | `/auth/estadisticas`    | Totales del usuario             | ✅   |
+| PUT    | `/auth/activar-premium` | Activar plan Premium            | ✅   |
 
 ### Ingresos
 
@@ -216,12 +197,13 @@ CREATE TABLE ahorros_usd (
 
 ### Gastos
 
-| Método | Ruta           | Descripción               | Auth |
-| ------ | -------------- | ------------------------- | ---- |
-| GET    | `/gastos`      | Listar gastos con filtros | ✅   |
-| POST   | `/gastos`      | Crear gasto               | ✅   |
-| PUT    | `/gastos/{id}` | Actualizar gasto          | ✅   |
-| DELETE | `/gastos/{id}` | Anular gasto — no elimina | ✅   |
+| Método | Ruta            | Descripción                | Auth |
+| ------ | --------------- | -------------------------- | ---- |
+| GET    | `/gastos`       | Listar gastos con filtros  | ✅   |
+| POST   | `/gastos`       | Crear gasto                | ✅   |
+| PUT    | `/gastos/{id}`  | Actualizar gasto           | ✅   |
+| DELETE | `/gastos/{id}`  | Anular gasto — no elimina  | ✅   |
+| GET    | `/gastos/racha` | Racha de días consecutivos | ✅   |
 
 ### Presupuesto
 
@@ -264,6 +246,7 @@ flowchart TD
         C["Ingresos/Gastos - CRUD"]
         D["Presupuesto - Alertas"]
         E2["Ahorros USD - CRUD"]
+        P["Perfil - Premium y estadísticas"]
         UI["Sidebar + Topbar + ThemeContext"]
     end
 
@@ -275,7 +258,7 @@ flowchart TD
     end
 
     subgraph DB["Base de datos - PostgreSQL"]
-        I["usuarios - JWT y Google"]
+        I["usuarios - JWT, Google y plan"]
         J["ingresos - por categoria"]
         K["gastos - anulacion bancaria"]
         L["presupuestos - alertas 80 porciento"]
@@ -283,8 +266,8 @@ flowchart TD
         N["ahorros_usd - balance en dolares"]
     end
 
-    A & B & C & D & E2 <-->|HTTP JSON + JWT| F
-    UI --> A & B & C & D & E2
+    A & B & C & D & E2 & P <-->|HTTP JSON + JWT| F
+    UI --> A & B & C & D & E2 & P
     E --> F
     G --> F
     H --> F
@@ -294,7 +277,7 @@ flowchart TD
     classDef backend fill:#1a3a2a,stroke:#00E676,color:#e2e8f0
     classDef database fill:#3a1a1a,stroke:#f87171,color:#e2e8f0
 
-    class A,B,C,D,E2,UI frontend
+    class A,B,C,D,E2,P,UI frontend
     class E,F,G,H backend
     class I,J,K,L,M,N database
 ```
@@ -330,6 +313,11 @@ flowchart TD
 - Seguimiento de ahorros en dólares con balance acumulado
 - Historial inmutable — criterio bancario profesional
 - Interfaz responsive — funciona en mobile y desktop
+- Perfil de usuario con foto Google, estadísticas y badge de proveedor
+- Plan **Premium simulado** — exportación PDF activa para usuarios Premium
+- Exportación a **CSV** y **PDF** de gastos filtrados por mes
+- Chip de racha diaria — días consecutivos registrando gastos
+- Chip "Insight de la semana" (Premium) en el Dashboard
 
 ---
 
@@ -355,7 +343,6 @@ pip install -r requirements.txt
 
 Crear `backend/.env`:
 
-```
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=finanzas_dashboard
@@ -371,7 +358,6 @@ GOOGLE_CLIENT_ID=tu_google_client_id
 GOOGLE_CLIENT_SECRET=tu_google_client_secret
 
 ENVIRONMENT=development
-```
 
 > En producción (Railway), `database.py` prioriza una única variable `DATABASE_URL` en vez de las variables sueltas de conexión.
 >
@@ -397,10 +383,8 @@ npm install
 
 Crear `frontend/.env`:
 
-```
 VITE_API_URL=http://127.0.0.1:8000
 VITE_GOOGLE_CLIENT_ID=tu_google_client_id
-```
 
 ### 7. Correr el frontend
 
@@ -425,6 +409,6 @@ Abrís `http://localhost:5173` en el navegador.
 
 ## 👤 Autor
 
-**Gustavo Ariel Rodriguez**
-Tecnicatura Universitaria en Programación — UTN San Rafael
-[GitHub](https://github.com/GustavoRodriguez79) · [LinkedIn](https://www.linkedin.com/in/gustavo-ariel-rodr%C3%ADguez-fornes-36a899370/) · [garodrifornes79@gmail.com](mailto:garodrifornes79@gmail.com)
+**Gustavo Ariel Rodriguez**  
+Tecnicatura Universitaria en Programación — UTN San Rafael  
+[GitHub](https://github.com/GustavoRodriguez79) · [LinkedIn](https://www.linkedin.com/in/gustavo-ariel-rodr%C3%ADguez-fornes-36a899370/)
