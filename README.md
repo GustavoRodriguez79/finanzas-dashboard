@@ -27,6 +27,7 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 
 ## 📁 Estructura del proyecto
 
+```text
 finanzas-dashboard/
 ├── backend/
 │ ├── main.py # Entrada de la app FastAPI
@@ -79,6 +80,7 @@ finanzas-dashboard/
 ├── docs/
 ├── .gitignore
 └── README.md
+```
 
 ---
 
