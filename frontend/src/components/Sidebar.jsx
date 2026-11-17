@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { to: "/presupuesto", icon: "🎯", label: "Presupuesto" },
   { to: "/resumen", icon: "📈", label: "Resumen Anual" },
   { to: "/ahorros-usd", icon: "🇺🇸", label: "Ahorros USD" },
+  { to: "/asistente", icon: "🤖", label: "Asistente IA" },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {

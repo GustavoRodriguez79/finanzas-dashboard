@@ -30,12 +30,14 @@ import Presupuesto from "./pages/Presupuesto";
 import ResumenAnual from "./pages/ResumenAnual";
 import AhorrosUSD from "./pages/AhorrosUSD";
 import Perfil from "./pages/Perfil";
+import Asistente from "./pages/Asistente"
 
 // Google OAuth Client ID — se configura en .env
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 // Título que muestra la Topbar según la ruta actual
 const PAGE_TITLES = {
+  "/asistente": "Asistente IA",
   "/dashboard": "Dashboard",
   "/ingresos": "Ingresos",
   "/gastos": "Gastos",
@@ -43,6 +45,7 @@ const PAGE_TITLES = {
   "/resumen": "Resumen Anual",
   "/ahorros-usd": "Ahorros USD 🇺🇸",
   "/perfil": "Perfil",
+  
 };
 
 // Envuelve las páginas privadas con Sidebar + Topbar.
@@ -141,6 +144,15 @@ function App() {
                   element={
                     <PrivateRoute>
                       <Perfil />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route
+                  path="/asistente"
+                  element={
+                    <PrivateRoute>
+                      <Asistente />
                     </PrivateRoute>
                   }
                 />
