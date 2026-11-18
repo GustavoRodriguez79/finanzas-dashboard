@@ -33,7 +33,6 @@ def obtener_contexto_financiero(usuario_id: int, mes: int | None, anio: int | No
     try:
         # Filtros de fecha
         filtro_mes = ""
-        params_base = [usuario_id]
 
         if mes and anio:
             filtro_mes = "AND EXTRACT(MONTH FROM fecha) = %s AND EXTRACT(YEAR FROM fecha) = %s"
@@ -77,12 +76,19 @@ def obtener_contexto_financiero(usuario_id: int, mes: int | None, anio: int | No
         balance = total_ingresos - total_gastos
         tasa_ahorro = (balance / total_ingresos * 100) if total_ingresos > 0 else 0
 
-        # Presupuestos activos
-        cursor.execute("""
-            SELECT categoria, monto_limite
-            FROM presupuestos
-            WHERE usuario_id = %s AND activo = TRUE
-        """, [usuario_id])
+        # Presupuestos del período
+        if mes and anio:
+            cursor.execute("""
+                SELECT categoria, monto_limite
+                FROM presupuestos
+                WHERE usuario_id = %s AND mes = %s AND anio = %s
+            """, [usuario_id, mes, anio])
+        else:
+            cursor.execute("""
+                SELECT categoria, monto_limite
+                FROM presupuestos
+                WHERE usuario_id = %s
+            """, [usuario_id])
         presupuestos = cursor.fetchall()
 
         # Armar contexto como texto
