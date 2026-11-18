@@ -3,7 +3,7 @@
 // Solo visible para usuarios premium.
 
 import { useState, useRef, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import axios from 'axios'
 
 const API = import.meta.env.VITE_API_URL
@@ -17,7 +17,7 @@ const SUGERENCIAS = [
 ]
 
 export default function Asistente() {
-  const { user } = useAuth()
+  const { usuario: user } = useAuth()
   const [mensajes, setMensajes] = useState([
     {
       rol: 'asistente',
@@ -45,7 +45,7 @@ export default function Asistente() {
     setCargando(true)
 
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('access_token')
       const { data } = await axios.post(
         `${API}/asistente/`,
         { pregunta, mes, anio },
