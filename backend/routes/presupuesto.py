@@ -3,7 +3,8 @@
 # Incluye lógica de alertas cuando el gasto supera el 80% del límite.
 # Todos los endpoints requieren JWT válido — Depends(get_current_user).
 
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Header
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import Optional
 from database import get_connection, release_connection
@@ -12,6 +13,8 @@ from auth import get_current_user
 from datetime import date
 import calendar
 import logging
+import os
+import secrets
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -187,6 +190,8 @@ def crear_presupuesto(
 
 class AlertaPresupuesto(BaseModel):
     """Categoría cuyo gasto llegó al 80% o más de su límite mensual."""
+    usuario_id: int          # n8n lo necesita para saber de quién es cada alerta
+    email: str               # destinatario del aviso
     categoria: str
     monto_limite: float
     gasto_actual: float
@@ -195,17 +200,55 @@ class AlertaPresupuesto(BaseModel):
     superado: bool           # True si llegó al 100% (False = entre 80% y 99%)
 
 
+# auto_error=False: si falta el header Authorization no responde 403 de inmediato,
+# así se puede probar la API Key como alternativa.
+bearer_opcional = HTTPBearer(auto_error=False)
+
+
+def autenticar_alertas(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_opcional),
+    x_api_key: Optional[str] = Header(default=None)
+) -> Optional[dict]:
+    """
+    Autentica /alerta por JWT o por API Key (n8n).
+    - Si viene Authorization: Bearer → valida el JWT y devuelve el usuario.
+    - Si no, y viene X-API-Key válida → devuelve None (acceso a todos los usuarios).
+    - En cualquier otro caso → 401.
+    """
+    if credentials:
+        return get_current_user(credentials)
+
+    clave_esperada = os.getenv("N8N_API_KEY")
+    # Si la variable no está definida el modo API Key queda deshabilitado:
+    # evita que un header vacío coincida con una clave vacía.
+    # compare_digest en bytes: tiempo constante y no falla con caracteres no ASCII.
+    if (
+        clave_esperada
+        and x_api_key
+        and secrets.compare_digest(x_api_key.encode(), clave_esperada.encode())
+    ):
+        return None
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Autenticación requerida: token JWT o API Key válida",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+
+
 # Se declara antes de DELETE /{presupuesto_id} para que no haya colisión de rutas
 @router.get("/alerta", response_model=list[AlertaPresupuesto])
 def obtener_alertas(
     mes: Optional[int] = None,
     anio: Optional[int] = None,
-    current_user: dict = Depends(get_current_user)
+    usuario: Optional[dict] = Depends(autenticar_alertas)
 ):
     """
     Retorna solo las categorías del período cuyo gasto real llegó al 80% o más
     de su límite, ordenadas de mayor a menor porcentaje.
-    Los gastos anulados no cuentan. Usa mes y año actuales si no se especifican.
+    Con JWT devuelve las del usuario autenticado; con X-API-Key (n8n), las de
+    todos los usuarios activos. Los gastos anulados no cuentan.
+    Usa mes y año actuales si no se especifican.
     Ejemplo: GET /presupuesto/alerta?mes=6&anio=2026
     """
     conn = get_connection()
@@ -215,32 +258,44 @@ def obtener_alertas(
         mes = mes or hoy.month
         anio = anio or hoy.year
 
+        params = [mes, anio]
+        filtro_usuario = ""
+        if usuario is not None:
+            # Modo JWT: solo los presupuestos del usuario autenticado
+            filtro_usuario = "AND p.usuario_id = %s"
+            params.append(usuario["id"])
+
         # Una sola query: LEFT JOIN para no perder presupuestos sin gastos,
         # y HAVING para filtrar al 80% (no se puede usar WHERE sobre un SUM).
         # monto_limite > 0 evita dividir por cero al ordenar.
-        cursor.execute("""
-            SELECT p.categoria, p.monto_limite,
+        # u.activo = TRUE: en modo n8n no se avisa a cuentas desactivadas.
+        cursor.execute(f"""
+            SELECT p.usuario_id, u.email, p.categoria, p.monto_limite,
                    COALESCE(SUM(g.monto), 0) AS gastado
             FROM presupuestos p
+            JOIN usuarios u ON u.id = p.usuario_id
             LEFT JOIN gastos g ON
                 g.usuario_id = p.usuario_id
                 AND g.categoria = p.categoria
                 AND EXTRACT(MONTH FROM g.fecha) = p.mes
                 AND EXTRACT(YEAR FROM g.fecha) = p.anio
                 AND g.anulado = FALSE
-            WHERE p.usuario_id = %s AND p.mes = %s AND p.anio = %s
-            GROUP BY p.categoria, p.monto_limite
+            WHERE p.mes = %s AND p.anio = %s AND u.activo = TRUE
+                {filtro_usuario}
+            GROUP BY p.usuario_id, u.email, p.categoria, p.monto_limite
             HAVING p.monto_limite > 0
                AND COALESCE(SUM(g.monto), 0) >= p.monto_limite * 0.8
             ORDER BY COALESCE(SUM(g.monto), 0) / p.monto_limite DESC
-        """, (current_user["id"], mes, anio))
+        """, params)
 
         resultado = []
-        for categoria, limite, gastado in cursor.fetchall():
+        for usuario_id, email, categoria, limite, gastado in cursor.fetchall():
             limite = float(limite)
             gastado = float(gastado)
             porcentaje = gastado / limite * 100
             resultado.append(AlertaPresupuesto(
+                usuario_id=usuario_id,
+                email=email,
                 categoria=categoria,
                 monto_limite=limite,
                 gasto_actual=gastado,
