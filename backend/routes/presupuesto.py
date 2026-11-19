@@ -4,6 +4,7 @@
 # Todos los endpoints requieren JWT válido — Depends(get_current_user).
 
 from fastapi import APIRouter, HTTPException, status, Depends
+from pydantic import BaseModel
 from typing import Optional
 from database import get_connection, release_connection
 from schemas import PresupuestoCreate, PresupuestoResponse
@@ -174,6 +175,83 @@ def crear_presupuesto(
     except Exception as e:
         conn.rollback()
         logger.error(f"Error creando presupuesto: {e}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+    finally:
+        cursor.close()
+        release_connection(conn)
+
+
+# ══════════════════════════════════════════
+#  ALERTAS DE PRESUPUESTO
+# ══════════════════════════════════════════
+
+class AlertaPresupuesto(BaseModel):
+    """Categoría cuyo gasto llegó al 80% o más de su límite mensual."""
+    categoria: str
+    monto_limite: float
+    gasto_actual: float
+    porcentaje: float
+    alerta: bool = True      # siempre True: la lista ya viene filtrada al 80%
+    superado: bool           # True si llegó al 100% (False = entre 80% y 99%)
+
+
+# Se declara antes de DELETE /{presupuesto_id} para que no haya colisión de rutas
+@router.get("/alerta", response_model=list[AlertaPresupuesto])
+def obtener_alertas(
+    mes: Optional[int] = None,
+    anio: Optional[int] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Retorna solo las categorías del período cuyo gasto real llegó al 80% o más
+    de su límite, ordenadas de mayor a menor porcentaje.
+    Los gastos anulados no cuentan. Usa mes y año actuales si no se especifican.
+    Ejemplo: GET /presupuesto/alerta?mes=6&anio=2026
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        hoy = date.today()
+        mes = mes or hoy.month
+        anio = anio or hoy.year
+
+        # Una sola query: LEFT JOIN para no perder presupuestos sin gastos,
+        # y HAVING para filtrar al 80% (no se puede usar WHERE sobre un SUM).
+        # monto_limite > 0 evita dividir por cero al ordenar.
+        cursor.execute("""
+            SELECT p.categoria, p.monto_limite,
+                   COALESCE(SUM(g.monto), 0) AS gastado
+            FROM presupuestos p
+            LEFT JOIN gastos g ON
+                g.usuario_id = p.usuario_id
+                AND g.categoria = p.categoria
+                AND EXTRACT(MONTH FROM g.fecha) = p.mes
+                AND EXTRACT(YEAR FROM g.fecha) = p.anio
+                AND g.anulado = FALSE
+            WHERE p.usuario_id = %s AND p.mes = %s AND p.anio = %s
+            GROUP BY p.categoria, p.monto_limite
+            HAVING p.monto_limite > 0
+               AND COALESCE(SUM(g.monto), 0) >= p.monto_limite * 0.8
+            ORDER BY COALESCE(SUM(g.monto), 0) / p.monto_limite DESC
+        """, (current_user["id"], mes, anio))
+
+        resultado = []
+        for categoria, limite, gastado in cursor.fetchall():
+            limite = float(limite)
+            gastado = float(gastado)
+            porcentaje = gastado / limite * 100
+            resultado.append(AlertaPresupuesto(
+                categoria=categoria,
+                monto_limite=limite,
+                gasto_actual=gastado,
+                porcentaje=round(porcentaje, 1),
+                superado=porcentaje >= 100
+            ))
+
+        return resultado
+
+    except Exception as e:
+        logger.error(f"Error obteniendo alertas de presupuesto: {e}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
     finally:
         cursor.close()
