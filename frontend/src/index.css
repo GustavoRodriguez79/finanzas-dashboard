@@ -48,9 +48,6 @@
   --radio: 10px;
   --transition: 0.25s ease;
 
-  /* TEMPORAL: lo usa AhorrosUSD.css (card de balance). Se elimina cuando esa página se rediseñe */
-  --grad-usd: linear-gradient(135deg, #34d399 0%, #059669 100%);
-
   /* Sidebar */
   --sidebar-bg: var(--bg-2);
   --sidebar-hover: var(--accent-bg);
@@ -78,8 +75,6 @@
   --red: #e11d48;
   --amber: #d97706;
   --blue: #2563eb;
-
-  --grad-usd: linear-gradient(135deg, #34d399 0%, #059669 100%);
 }
 
 /* ═══════════════════════════════════════
