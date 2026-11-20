@@ -17,20 +17,8 @@
   width: 100%;
   max-width: 420px;
   border: 1px solid var(--border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Línea decorativa superior */
-.auth-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary), #69f0ae);
+  /* Sin sombra: en el tema oscuro el borde alcanza para separar la card del fondo */
+  box-shadow: none;
 }
 
 /* Header */
@@ -40,6 +28,8 @@
 }
 
 .auth-header h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
   font-size: 2rem;
   color: var(--primary);
   margin-bottom: 8px;
@@ -83,7 +73,7 @@
 .form-group input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
+  box-shadow: 0 0 0 3px var(--accent-bg);
 }
 
 .form-group input::placeholder {
@@ -92,7 +82,7 @@
 
 /* Mensaje de error */
 .auth-error {
-  background: rgba(248, 113, 113, 0.1);
+  background: var(--red-bg);
   border: 1px solid var(--danger);
   border-radius: 8px;
   color: var(--danger);
@@ -116,7 +106,6 @@
 
 .btn-primary:hover:not(:disabled) {
   filter: brightness(1.1);
-  box-shadow: 0 0 16px rgba(0, 230, 118, 0.35);
   transform: translateY(-1px);
 }
 
