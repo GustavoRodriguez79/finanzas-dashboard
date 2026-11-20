@@ -1,9 +1,8 @@
 // Generado con `railway config migrate --apply` a partir de railway.toml.
 // TODAVÍA NO ESTÁ EN USO: Railway sigue leyendo railway.toml hasta que se ejecute
 // `railway config migrate cutover`. Antes de eso, revisar con `railway config plan`:
-//  - `commitSha` fija un commit viejo (1fce96a); la migración lo toma del estado
-//    actual del servicio. Si se aplicara así, desplegaría ese commit y no `main`.
-//  - La política de reinicio del toml (ON_FAILURE, 3 reintentos) no se tradujo.
+//  - Se quitó `commitSha` (fijaba el commit viejo 1fce96a) para que el servicio
+//    siga la rama `main` y no despliegue siempre ese commit.
 import { defineRailway, github, project, service } from "railway/iac";
 // This repository manages only its own resources in the environment. Other
 // repositories export their own partial name.
@@ -11,7 +10,7 @@ import { defineRailway, github, project, service } from "railway/iac";
 export const partial = "finanzas-dashboard";
 export default defineRailway(() => {
   const finanzasDashboard = service("finanzas-dashboard", {
-    source: github("GustavoRodriguez79/finanzas-dashboard", { branch: "main", commitSha: "1fce96ac9dff98edc782ad36f9c05731e55fa50b", rootDirectory: "backend", upstreamUrl: "https://github.com/GustavoRodriguez79/finanzas-dashboard" }),
+    source: github("GustavoRodriguez79/finanzas-dashboard", { branch: "main", rootDirectory: "backend", upstreamUrl: "https://github.com/GustavoRodriguez79/finanzas-dashboard" }),
     build: { buildEnvironment: "V3", builder: "NIXPACKS" },
     start: "uvicorn main:app --host 0.0.0.0 --port $PORT",
     healthcheck: "/",
