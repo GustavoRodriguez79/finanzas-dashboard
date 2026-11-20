@@ -9,36 +9,19 @@
 
 /* Card de presupuesto */
 .presupuesto-card {
-  background: var(--card);
-  border-radius: var(--radio);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
   padding: 20px;
-  border: 2px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: var(--transition);
-  position: relative;
-  overflow: hidden;
+  transition: border-color var(--transition);
 }
 
-.presupuesto-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-}
-
-.presupuesto-card.normal::before { background: var(--primary); }
-.presupuesto-card.advertencia::before { background: var(--warning); }
-.presupuesto-card.superado::before { background: var(--danger); }
-
-.presupuesto-card.normal { border-color: var(--border); }
-.presupuesto-card.advertencia { border-color: var(--warning); }
-.presupuesto-card.superado { border-color: var(--danger); }
-
+/* Hover neutro: señal de interacción sin usar color semántico */
 .presupuesto-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-glow);
+  border-color: var(--fg-3);
 }
 
 /* Header de la card */
@@ -56,25 +39,27 @@
 
 /* Barra de progreso */
 .presupuesto-barra-container {
-  height: 8px;
-  background: var(--border);
-  border-radius: 4px;
+  height: 6px;
+  background: var(--bg-3);
+  border-radius: 99px;
   overflow: hidden;
 }
 
 .presupuesto-barra {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 99px;
   transition: width 0.5s ease;
-  background: var(--primary);
+  background: var(--accent);
 }
 
+/* Verde hasta 79%, ámbar de 80% a 99%, rojo desde 100%. Las clases las
+   decide el backend (alerta >= 80, superado >= 100) */
 .presupuesto-card.advertencia .presupuesto-barra {
-  background: var(--warning);
+  background: var(--amber);
 }
 
 .presupuesto-card.superado .presupuesto-barra {
-  background: var(--danger);
+  background: var(--red);
 }
 
 /* Info */
@@ -85,52 +70,56 @@
 }
 
 .presupuesto-porcentaje {
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
 }
 
 .presupuesto-card.advertencia .presupuesto-porcentaje {
-  color: var(--warning);
+  color: var(--amber);
 }
 
 .presupuesto-card.superado .presupuesto-porcentaje {
-  color: var(--danger);
+  color: var(--red);
 }
 
 .presupuesto-montos {
   font-size: 0.85rem;
   color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Proyección a fin de mes (solo mes en curso). Roja si supera el límite. */
 .presupuesto-proyeccion {
   font-size: 0.85rem;
   color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
 }
 
 .presupuesto-proyeccion.excede {
-  color: var(--danger);
+  color: var(--red);
   font-weight: 600;
 }
 
 /* Alerta */
+/* Fondo neutro: el color va solo en el texto, igual que en el resto del rediseño */
 .presupuesto-alerta {
   font-size: 0.85rem;
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 6px;
   text-align: center;
+  background: var(--bg-3);
 }
 
 .presupuesto-card.advertencia .presupuesto-alerta {
-  background: rgba(251, 191, 36, 0.1);
-  color: var(--warning);
+  color: var(--amber);
 }
 
 .presupuesto-card.superado .presupuesto-alerta {
-  background: rgba(248, 113, 113, 0.1);
-  color: var(--danger);
+  color: var(--red);
 }
 
 /* Disponible */
@@ -139,4 +128,5 @@
   color: var(--text-secondary);
   border-top: 1px solid var(--border);
   padding-top: 8px;
+  font-variant-numeric: tabular-nums;
 }
