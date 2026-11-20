@@ -20,7 +20,7 @@ Dashboard de finanzas personales con autenticación JWT y Google OAuth.
 - **Base de datos:** PostgreSQL · psycopg2 · pool de conexiones
 - **Autenticación:** JWT · bcrypt · Google OAuth
 - **Frontend:** React 18 · Vite · Axios · Recharts · React Router
-- **Deploy:** Railway (backend) · Supabase (PostgreSQL) · Netlify (frontend)
+- **Deploy:** Railway (backend) · Supabase (PostgreSQL) · Netlify (frontend) · n8n (automatización)
 - **Otros:** python-dotenv · Pydantic · passlib · ESLint · google-auth · jsPDF
 
 ---
@@ -209,11 +209,12 @@ CREATE TABLE ahorros_usd (
 
 ### Presupuesto
 
-| Método | Ruta                | Descripción                    | Auth |
-| ------ | ------------------- | ------------------------------ | ---- |
-| GET    | `/presupuesto`      | Ver presupuestos con alertas   | ✅   |
-| POST   | `/presupuesto`      | Crear o actualizar presupuesto | ✅   |
-| DELETE | `/presupuesto/{id}` | Eliminar presupuesto           | ✅   |
+| Método | Ruta                  | Descripción                                | Auth             |
+| ------ | --------------------- | ------------------------------------------ | ---------------- |
+| GET    | `/presupuesto`        | Ver presupuestos con alertas               | ✅               |
+| POST   | `/presupuesto`        | Crear o actualizar presupuesto             | ✅               |
+| DELETE | `/presupuesto/{id}`   | Eliminar presupuesto                       | ✅               |
+| GET    | `/presupuesto/alerta` | Categorías que superaron el 80% del límite | ✅ JWT o API Key |
 
 ### Resumen
 
@@ -257,6 +258,7 @@ flowchart TD
         F["routes - CRUD + resumen"]
         G["database.py - Pool conexiones"]
         H["schemas.py - Validacion Pydantic"]
+        ALR["/presupuesto/alerta - JWT o API Key"]
     end
 
     subgraph DB["Base de datos - PostgreSQL"]
@@ -268,20 +270,32 @@ flowchart TD
         N["ahorros_usd - balance en dolares"]
     end
 
+    subgraph N8N["Automatización - n8n"]
+        W1["Schedule Trigger - cada 6 horas"]
+        W2["GET /presupuesto/alerta"]
+        W3["IF alerta = true"]
+        W4["Envío de email via Resend API"]
+    end
+
     A & B & C & D & E2 & P <-->|HTTP JSON + JWT| F
     UI --> A & B & C & D & E2 & P
     E --> F
     G --> F
     H --> F
     F -->|SQL| I & J & K & L & M & N
+    W1 --> W2 --> W3 --> W4
+    W2 -->|API Key| ALR
+    ALR -->|SQL| L
 
     classDef frontend fill:#1a3a5c,stroke:#38bdf8,color:#e2e8f0
     classDef backend fill:#1a3a2a,stroke:#00E676,color:#e2e8f0
     classDef database fill:#3a1a1a,stroke:#f87171,color:#e2e8f0
+    classDef automation fill:#2a1a3a,stroke:#c084fc,color:#e2e8f0
 
     class A,B,C,D,E2,P,UI frontend
-    class E,F,G,H backend
+    class E,F,G,H,ALR backend
     class I,J,K,L,M,N database
+    class W1,W2,W3,W4 automation
 ```
 
 ---
@@ -309,7 +323,8 @@ flowchart TD
 - Gráfico donut de gastos por categoría
 - Gráfico de barras comparativo con el mes anterior
 - Filtros por mes, año y categoría en todas las páginas
-- Presupuesto mensual por categoría con **alertas visuales al 80%**
+- Presupuesto mensual por categoría con **alertas visuales al 80%** y **envío automático de email** al superar el límite
+- Alertas por email automatizadas con **n8n** — workflow programado cada 6 horas que consulta `/presupuesto/alerta` y envía notificación por **Resend**
 - Proyección del gasto mensual basada en promedio diario
 - Resumen anual con evolución mes a mes y detalle por categoría
 - Seguimiento de ahorros en dólares con balance acumulado
@@ -406,6 +421,7 @@ Abrís `http://localhost:5173` en el navegador.
 - **Base de datos:** [Supabase](https://supabase.com) — PostgreSQL
 - **Frontend:** [Netlify](https://netlify.com) — React + Vite
   - Sitio: [https://finanzas-dashboard-gustavo.netlify.app](https://finanzas-dashboard-gustavo.netlify.app)
+- **Automatización:** [n8n](https://n8n.io) — workflow de alertas por email cada 6 horas vía Resend
 
 ---
 
