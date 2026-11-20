@@ -247,13 +247,14 @@
 }
 
 .badge-ingreso {
-  background: var(--accent-bg);
+  background: var(--bg);
   color: var(--success);
 }
 
+/* Fondo neutro (--bg y no --bg-3: --bg-3 es el hover de las filas y el badge se perdería) */
 .badge-gasto {
-  background: rgba(248, 113, 113, 0.15);
-  color: var(--danger);
+  background: var(--bg);
+  color: var(--red);
 }
 
 /* Montos */
