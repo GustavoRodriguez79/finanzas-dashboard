@@ -11,24 +11,45 @@
    TEMA OSCURO (default)
 ═══════════════════════════════════════ */
 :root {
-  --bg: #0f172a;
-  --bg-secondary: #1a2235;
-  --card: #1e293b;
-  --card-inner: #0f172a;
-  --primary: #00e676;
-  --primary-dim: rgba(0, 230, 118, 0.15);
-  --text: #f8fafc;
-  --text-secondary: #94a3b8;
-  --border: #334155;
-  --danger: #f87171;
-  --success: #00e676;
-  --warning: #fbbf24;
-  --shadow-glow: 0 0 25px rgba(0, 230, 118, 0.25);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
-  --radio: 14px;
+  /* Tokens nuevos del rediseño */
+  --bg: #0f1117;
+  --bg-2: #161b27;
+  --bg-3: #1c2235;
+  --border: rgba(255, 255, 255, 0.07);
+
+  --fg: #e8eaf0;
+  --fg-2: #8891a8;
+  --fg-3: #555e75;
+
+  /* Semánticos: el color va solo en el número, nunca en el fondo de la card */
+  --accent: #10b981;
+  --accent-bg: rgba(16, 185, 129, 0.08);
+  --red: #f43f5e;
+  --red-bg: rgba(244, 63, 94, 0.08);
+  --blue: #60a5fa;
+  --blue-bg: rgba(96, 165, 250, 0.08);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245, 158, 11, 0.08);
+
+  /* Alias: nombres viejos que usan el resto de los CSS. Apuntan a los tokens
+     nuevos para no tener que renombrar en todas las páginas */
+  --bg-secondary: var(--bg-3);
+  --card: var(--bg-2);
+  --card-inner: var(--bg);
+  --primary: var(--accent);
+  --primary-dim: var(--accent-bg);
+  --text: var(--fg);
+  --text-secondary: var(--fg-2);
+  --danger: var(--red);
+  --success: var(--accent);
+  --warning: var(--amber);
+  --shadow-glow: none;
+  --shadow-card: none;
+  --radio: 10px;
   --transition: 0.25s ease;
 
-  /* Gradientes para metric cards */
+  /* TEMPORAL: se eliminan en el paso 3 (Dashboard.css) cuando las cards dejen
+     de usarlos; hasta entonces el Dashboard quedaría sin fondo */
   --grad-ingresos: linear-gradient(135deg, #00e676 0%, #00bcd4 100%);
   --grad-gastos: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
   --grad-balance: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
@@ -36,47 +57,44 @@
   --grad-usd: linear-gradient(135deg, #34d399 0%, #059669 100%);
 
   /* Sidebar */
-  --sidebar-bg: #161f32;
-  --sidebar-hover: rgba(0, 230, 118, 0.08);
-  --sidebar-active: rgba(0, 230, 118, 0.15);
+  --sidebar-bg: var(--bg-2);
+  --sidebar-hover: var(--accent-bg);
+  --sidebar-active: var(--accent-bg);
   --sidebar-width: 240px;
 }
 
 /* ═══════════════════════════════════════
    TEMA CLARO
 ═══════════════════════════════════════ */
-[data-theme="light"] {
-  --bg: #f1f5f9;
-  --bg-secondary: #e2e8f0;
-  --card: #ffffff;
-  --card-inner: #f8fafc;
-  --primary: #059669;
-  --primary-dim: rgba(5, 150, 105, 0.1);
-  --text: #0f172a;
-  --text-secondary: #64748b;
-  --border: #cbd5e1;
-  --danger: #dc2626;
-  --success: #059669;
-  --warning: #d97706;
-  --shadow-glow: 0 0 25px rgba(5, 150, 105, 0.2);
-  --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.08);
+/* Solo por data-theme: el toggle de ThemeContext es la única fuente del tema.
+   No se usa prefers-color-scheme porque ThemeContext deja data-theme="" en oscuro */
+:root[data-theme="light"] {
+  --bg: #f5f6fa;
+  --bg-2: #ffffff;
+  --bg-3: #eef0f6;
+  --border: rgba(0, 0, 0, 0.08);
+  --fg: #111827;
+  --fg-2: #4b5563;
+  --fg-3: #9ca3af;
+
+  /* Más oscuros que en el tema oscuro para mantener contraste sobre fondo blanco */
+  --accent: #059669;
+  --accent-bg: rgba(5, 150, 105, 0.08);
+  --red: #e11d48;
+  --amber: #d97706;
 
   --grad-ingresos: linear-gradient(135deg, #10b981 0%, #0891b2 100%);
   --grad-gastos: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
   --grad-balance: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
   --grad-ahorro: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
   --grad-usd: linear-gradient(135deg, #34d399 0%, #059669 100%);
-
-  --sidebar-bg: #ffffff;
-  --sidebar-hover: rgba(5, 150, 105, 0.07);
-  --sidebar-active: rgba(5, 150, 105, 0.12);
 }
 
 /* ═══════════════════════════════════════
    BASE
 ═══════════════════════════════════════ */
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
   background-color: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -138,6 +156,7 @@ a {
   border-bottom: 1px solid var(--border);
 }
 .sidebar-logo-text {
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.15rem;
   font-weight: 800;
   color: var(--primary);
@@ -343,7 +362,8 @@ a {
 .toggle-slider {
   position: absolute;
   inset: 0;
-  background: var(--border);
+  /* --border es casi transparente en el nuevo tema; el slider apagado necesita un color sólido */
+  background: var(--bg-3);
   border-radius: 10px;
   cursor: pointer;
   transition: var(--transition);
@@ -582,8 +602,8 @@ a {
   display: inline-block;
   padding: 0.4rem 1rem;
   border-radius: 20px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #fff;
+  background: var(--amber);
+  color: #0f1117;
   font-size: 0.85rem;
   font-weight: 600;
 }
