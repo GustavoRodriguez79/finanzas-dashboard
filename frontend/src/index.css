@@ -362,8 +362,9 @@ a {
 .toggle-slider {
   position: absolute;
   inset: 0;
-  /* --border es casi transparente en el nuevo tema; el slider apagado necesita un color sólido */
-  background: var(--bg-3);
+  /* --border es casi transparente y --bg-3 es el mismo color que el contenedor
+     (.theme-toggle), así que el track apagado necesita un gris con contraste propio */
+  background: var(--fg-3);
   border-radius: 10px;
   cursor: pointer;
   transition: var(--transition);
