@@ -71,55 +71,42 @@
 }
 
 .total-card {
-  background: var(--card);
-  border-radius: var(--radio);
+  background: var(--bg-2);
+  border-radius: 10px;
   padding: 24px;
-  border: 2px solid transparent;
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  position: relative;
-  overflow: hidden;
-  transition: var(--transition);
+  transition: border-color var(--transition);
 }
-
-.total-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-}
-
-.total-card.ingresos::before { background: var(--success); }
-.total-card.gastos::before { background: var(--danger); }
-.total-card.balance.positivo::before { background: var(--success); }
-.total-card.balance.negativo::before { background: var(--danger); }
-.total-card.ahorro::before { background: var(--warning); }
 
 .total-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--primary);
-  box-shadow: var(--shadow-glow);
+  border-color: var(--fg-3);
 }
 
 .total-label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  color: var(--fg-3);
 }
 
 .total-valor {
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   color: var(--text);
 }
 
-.total-card.ingresos .total-valor { color: var(--success); }
-.total-card.gastos .total-valor { color: var(--danger); }
-.total-card.balance.positivo .total-valor { color: var(--success); }
-.total-card.balance.negativo .total-valor { color: var(--danger); }
-.total-card.ahorro .total-valor { color: var(--warning); }
+/* El color va solo en el número, igual que en el Dashboard */
+.total-card.ingresos .total-valor { color: var(--accent); }
+.total-card.gastos .total-valor { color: var(--red); }
+.total-card.balance.positivo .total-valor { color: var(--blue); }
+.total-card.balance.negativo .total-valor { color: var(--red); }
+.total-card.ahorro .total-valor { color: var(--amber); }
 
 /* Destacados */
 .resumen-destacados {
@@ -139,10 +126,11 @@
 }
 
 .destacado-label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  color: var(--fg-3);
 }
 
 .destacado-mes {
@@ -154,6 +142,7 @@
 .destacado-monto {
   font-size: 0.9rem;
   color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Gráfico card */
@@ -204,6 +193,7 @@
   color: var(--text-secondary);
   width: 50px;
   text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .categoria-monto {
@@ -211,6 +201,7 @@
   font-weight: 600;
   width: 100px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Tabla mes a mes */
@@ -242,11 +233,16 @@
 }
 
 .meses-tabla tbody tr:hover {
-  background: rgba(0, 230, 118, 0.04);
+  background: var(--bg-3);
 }
 
-.monto-positivo { color: var(--success); font-weight: 600; }
-.monto-negativo { color: var(--danger); font-weight: 600; }
+.monto-positivo { color: var(--success); font-weight: 600; font-variant-numeric: tabular-nums; }
+.monto-negativo { color: var(--danger); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ".meses-tabla td" (color de texto) tiene más especificidad que la clase sola y pisaba el
+   verde/rojo de las celdas; con el selector de la tabla gana el color del monto */
+.meses-tabla td.monto-positivo { color: var(--accent); }
+.meses-tabla td.monto-negativo { color: var(--red); }
 
 /* Responsive */
 @media (max-width: 768px) {
