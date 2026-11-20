@@ -12,11 +12,10 @@
 }
 
 .perfil-card {
-  background: var(--card);
+  background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: var(--radio);
   padding: 24px;
-  box-shadow: var(--shadow-card);
 }
 
 /* ─── Identidad ─── */
@@ -38,9 +37,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--primary-dim);
-  border: 2px solid var(--primary);
-  color: var(--primary);
+  background: var(--accent-bg);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  font-family: "Space Grotesk", sans-serif;
   font-size: 2rem;
   font-weight: 700;
 }
@@ -55,8 +55,9 @@
 
 .perfil-nombre {
   margin: 0;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.4rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text);
 }
 
@@ -77,9 +78,8 @@
 }
 
 .perfil-badge.google {
-  color: var(--primary);
-  border-color: var(--primary);
-  background: var(--primary-dim);
+  color: var(--accent);
+  background: var(--bg-3);
 }
 
 /* ─── Estadísticas ─── */
@@ -94,7 +94,7 @@
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: var(--card);
+  background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: var(--radio);
 }
@@ -107,6 +107,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text);
+  font-variant-numeric: tabular-nums;
 }
 
 .perfil-error {
@@ -135,8 +136,8 @@
   border-radius: 999px;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #0f172a;
-  background: var(--grad-ahorro);
+  color: #0f1117;
+  background: var(--amber);
 }
 
 .perfil-premium-texto {
@@ -149,8 +150,8 @@
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  background: var(--grad-ahorro);
-  color: #0f172a;
+  background: var(--amber);
+  color: #0f1117;
   font-weight: 700;
   cursor: pointer;
 }

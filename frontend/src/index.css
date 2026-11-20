@@ -48,9 +48,7 @@
   --radio: 10px;
   --transition: 0.25s ease;
 
-  /* TEMPORAL: todavía los usan otras páginas (--grad-ahorro: Gastos.css y Perfil.css;
-     --grad-usd: AhorrosUSD.css). Se eliminan cuando esas páginas se rediseñen */
-  --grad-ahorro: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  /* TEMPORAL: lo usa AhorrosUSD.css (card de balance). Se elimina cuando esa página se rediseñe */
   --grad-usd: linear-gradient(135deg, #34d399 0%, #059669 100%);
 
   /* Sidebar */
@@ -81,7 +79,6 @@
   --amber: #d97706;
   --blue: #2563eb;
 
-  --grad-ahorro: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
   --grad-usd: linear-gradient(135deg, #34d399 0%, #059669 100%);
 }
 
