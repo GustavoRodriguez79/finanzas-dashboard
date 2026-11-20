@@ -18,10 +18,11 @@ const MESES_CORTOS = [
   "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
 ];
 
-// Color de la barra de presupuesto: verde hasta 60%, amarillo hasta 80%, rojo por encima
+// Color de la barra de presupuesto: verde hasta 79%, ámbar de 80% a 99%, rojo desde 100%.
+// Coincide con el backend (alerta >= 80, superado >= 100)
 function colorProgreso(porcentaje) {
-  if (porcentaje > 80) return "rojo";
-  if (porcentaje > 60) return "amarillo";
+  if (porcentaje >= 100) return "rojo";
+  if (porcentaje >= 80) return "amarillo";
   return "verde";
 }
 
@@ -271,7 +272,7 @@ function Dashboard() {
       <div className="dashboard-cards">
         <div className="metric-card ingresos" data-icon="💰">
           <span className="metric-label">💰 Ingresos</span>
-          <span className="metric-valor">
+          <span className="metric-valor c-green">
             {saldoVisible
               ? `$${resumen?.total_ingresos?.toLocaleString("es-AR", {
                   minimumFractionDigits: 2
@@ -281,7 +282,7 @@ function Dashboard() {
         </div>
         <div className="metric-card gastos" data-icon="💸">
           <span className="metric-label">💸 Gastos</span>
-          <span className="metric-valor">
+          <span className="metric-valor c-red">
             {saldoVisible
               ? `$${resumen?.total_gastos?.toLocaleString("es-AR", {
                   minimumFractionDigits: 2
@@ -294,7 +295,8 @@ function Dashboard() {
           data-icon="⚖️"
         >
           <span className="metric-label">⚖️ Balance</span>
-          <span className="metric-valor">
+          {/* Azul si el balance es positivo, rojo si es negativo: conserva la señal de alerta */}
+          <span className={`metric-valor ${resumen?.balance >= 0 ? "c-blue" : "c-red"}`}>
             {saldoVisible
               ? `$${resumen?.balance?.toLocaleString("es-AR", {
                   minimumFractionDigits: 2
@@ -304,7 +306,7 @@ function Dashboard() {
         </div>
         <div className="metric-card ahorro" data-icon="🎯">
           <span className="metric-label">🎯 Ahorro</span>
-          <span className="metric-valor">
+          <span className="metric-valor c-amber">
             {saldoVisible ? `${resumen?.porcentaje_ahorro}%` : "••••"}
           </span>
         </div>

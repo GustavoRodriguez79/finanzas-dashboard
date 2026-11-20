@@ -101,7 +101,7 @@
   border-color: var(--primary);
 }
 
-/* ─── Metric cards con gradiente ─── */
+/* ─── Metric cards: fondo neutro, el color va solo en el número (c-*) ─── */
 .dashboard-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -109,71 +109,50 @@
 }
 
 .metric-card {
-  border-radius: var(--radio);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
   padding: 20px 22px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  position: relative;
-  overflow: hidden;
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition);
-  color: #fff;
   cursor: default;
 }
 
-.metric-card.ingresos {
-  background: var(--grad-ingresos);
-}
-.metric-card.gastos {
-  background: var(--grad-gastos);
-}
-.metric-card.balance {
-  background: var(--grad-balance);
-}
-.metric-card.ahorro {
-  background: var(--grad-ahorro);
-}
-
-/* Balance negativo: degradado rojo, para conservar la señal que antes daba el color del valor */
-.metric-card.balance.negativo {
-  background: var(--grad-gastos);
-}
-
-.metric-card::after {
-  content: attr(data-icon);
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 2.4rem;
-  opacity: 0.25;
-}
-
-.metric-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-}
-
 .metric-label {
-  font-size: 0.78rem;
-  text-transform: uppercase;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
   letter-spacing: 1px;
-  font-weight: 700;
-  opacity: 0.85;
+  text-transform: uppercase;
+  color: var(--fg-3);
 }
 
 .metric-valor {
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.75rem;
-  font-weight: 800;
+  font-weight: 700; /* Space Grotesk se carga solo hasta 700 */
   line-height: 1;
-  color: #fff;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+
+/* Color semántico solo en el valor. Van después de .metric-valor para ganar por orden */
+.c-green {
+  color: var(--accent);
+}
+.c-red {
+  color: var(--red);
+}
+.c-blue {
+  color: var(--blue);
+}
+.c-amber {
+  color: var(--amber);
 }
 
 .metric-sub {
   font-size: 0.8rem;
-  opacity: 0.75;
+  color: var(--fg-3);
 }
 
 /* ─── Progreso de presupuesto por categoría ───
@@ -187,9 +166,9 @@
   border-radius: 999px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.85), rgba(220, 38, 38, 0.85));
-  box-shadow: 0 2px 10px rgba(249, 115, 22, 0.25);
+  color: var(--amber);
+  background: var(--amber-bg);
+  border: 1px solid var(--border);
 }
 
 .dash-pres {
@@ -236,33 +215,36 @@
   flex: 1;
   font-size: 0.82rem;
   color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
 }
 
 .dash-pres-porcentaje {
-  font-weight: 800;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .dash-pres-barra {
-  height: 8px;
-  background: var(--border);
-  border-radius: 4px;
+  height: 6px;
+  background: var(--bg-3);
+  border-radius: 99px;
   overflow: hidden;
 }
 
 .dash-pres-progreso {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 99px;
   transition: width 0.5s ease;
 }
 
-/* Verde hasta 60%, amarillo hasta 80%, rojo por encima */
-.dash-pres-progreso.verde { background: var(--success); }
-.dash-pres-progreso.amarillo { background: var(--warning); }
-.dash-pres-progreso.rojo { background: var(--danger); }
+/* Verde hasta 79%, ámbar de 80% a 99%, rojo desde 100% (ver colorProgreso en Dashboard.jsx) */
+.dash-pres-progreso.verde { background: var(--accent); }
+.dash-pres-progreso.amarillo { background: var(--amber); }
+.dash-pres-progreso.rojo { background: var(--red); }
 
-.dash-pres-porcentaje.verde { color: var(--success); }
-.dash-pres-porcentaje.amarillo { color: var(--warning); }
-.dash-pres-porcentaje.rojo { color: var(--danger); }
+.dash-pres-porcentaje.verde { color: var(--accent); }
+.dash-pres-porcentaje.amarillo { color: var(--amber); }
+.dash-pres-porcentaje.rojo { color: var(--red); }
 
 /* ─── Gráficos ─── */
 .dashboard-graficos {
@@ -317,16 +299,18 @@
 }
 
 .extra-label {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  font-weight: 700;
+  color: var(--fg-3);
 }
 
 .extra-valor {
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   color: var(--primary);
 }
 .extra-sub {
@@ -365,7 +349,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   color: #0f172a;
-  background: var(--grad-ahorro);
+  background: var(--amber);
 }
 
 /* Borroso e inseleccionable: se ve qué se obtendría, pero no se puede leer ni copiar */
