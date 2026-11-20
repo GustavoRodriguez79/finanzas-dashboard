@@ -31,6 +31,15 @@
   --amber: #f59e0b;
   --amber-bg: rgba(245, 158, 11, 0.08);
 
+  /* Paleta categórica de los gráficos. Validada con validate_palette.js contra --bg-2
+     en cada tema. Orden fijo: nunca se reordena ni se genera un 7.º color */
+  --cat-1: #3987e5;
+  --cat-2: #d95926;
+  --cat-3: #199e70;
+  --cat-4: #c98500;
+  --cat-5: #d55181;
+  --cat-6: #9085e9;
+
   /* Alias: nombres viejos que usan el resto de los CSS. Apuntan a los tokens
      nuevos para no tener que renombrar en todas las páginas */
   --bg-secondary: var(--bg-3);
@@ -75,6 +84,13 @@
   --red: #e11d48;
   --amber: #d97706;
   --blue: #2563eb;
+
+  --cat-1: #2a78d6;
+  --cat-2: #eb6834;
+  --cat-3: #199e70;
+  --cat-4: #c98500;
+  --cat-5: #d55181;
+  --cat-6: #6250d6;
 }
 
 /* ═══════════════════════════════════════

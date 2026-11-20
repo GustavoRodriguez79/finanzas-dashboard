@@ -21,7 +21,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div style={{
-        background: "var(--card)",
+        background: "var(--bg-2)",
         border: "1px solid var(--border)",
         borderRadius: 8,
         padding: "10px 14px",
@@ -30,7 +30,16 @@ const CustomTooltip = ({ active, payload, label }) => {
       }}>
         <p style={{ fontWeight: 700, marginBottom: 6 }}>{label}</p>
         {payload.map((entry, i) => (
-          <p key={i} style={{ color: entry.color }}>
+          <p key={i} style={{ fontVariantNumeric: "tabular-nums" }}>
+            {/* Cuadrito de color para identificar la serie; el texto va en tinta normal */}
+            <span style={{
+              display: "inline-block",
+              width: 8,
+              height: 8,
+              borderRadius: 2,
+              background: entry.color,
+              marginRight: 6
+            }} />
             {entry.name}: ${entry.value.toLocaleString("es-AR", {
               minimumFractionDigits: 2
             })}
@@ -71,25 +80,25 @@ function GraficoBarras({ datos }) {
         data={datos}
         margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
         barCategoryGap="30%"
+        barGap={2}
       >
         <CartesianGrid
-          strokeDasharray="3 3"
           stroke="var(--border)"
           vertical={false}
         />
         <XAxis
           dataKey="nombre"
-          tick={{ fill: "var(--text-secondary)", fontSize: 12 }}
+          tick={{ fill: "var(--fg-3)", fontSize: 10, fontFamily: '"JetBrains Mono", monospace' }}
           axisLine={{ stroke: "var(--border)" }}
           tickLine={false}
         />
         <YAxis
           tickFormatter={formatearEje}
-          tick={{ fill: "var(--text-secondary)", fontSize: 11 }}
+          tick={{ fill: "var(--fg-3)", fontSize: 10, fontFamily: '"JetBrains Mono", monospace' }}
           axisLine={false}
           tickLine={false}
         />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--bg-3)" }} />
         <Legend
           formatter={(value) => (
             <span style={{ color: "var(--text-secondary)", fontSize: "0.82rem" }}>
@@ -100,13 +109,13 @@ function GraficoBarras({ datos }) {
         <Bar
           dataKey="ingresos"
           name="Ingresos"
-          fill="#00E676"
+          fill="var(--accent)"
           radius={[4, 4, 0, 0]}
         />
         <Bar
           dataKey="gastos"
           name="Gastos"
-          fill="#f87171"
+          fill="var(--red)"
           radius={[4, 4, 0, 0]}
         />
       </BarChart>

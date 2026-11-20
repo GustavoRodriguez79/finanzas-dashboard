@@ -11,12 +11,31 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-// Colores para cada categoría
+// Paleta categórica (variables de index.css: cambian solas con el tema). Son 6 colores
+// validados; más categorías se agrupan en "Otras" en gris, nunca se inventa un color nuevo
 const COLORES = [
-  "#00E676", "#38bdf8", "#fbbf24", "#f87171",
-  "#a78bfa", "#34d399", "#fb923c", "#e879f9",
-  "#22d3ee", "#4ade80"
+  "var(--cat-1)", "var(--cat-2)", "var(--cat-3)",
+  "var(--cat-4)", "var(--cat-5)", "var(--cat-6)"
 ];
+const COLOR_OTRAS = "var(--fg-3)";
+
+// Deja las categorías con más gasto y suma el resto en "Otras". Si el resto es una sola
+// categoría conserva su nombre (llamarla "Otras" sería engañoso)
+function agruparCategorias(items) {
+  const ordenados = [...items].sort((a, b) => b.value - a.value);
+  const principales = ordenados.slice(0, COLORES.length);
+  const resto = ordenados.slice(COLORES.length);
+  if (resto.length === 0) return principales;
+  return [
+    ...principales,
+    {
+      name: resto.length === 1 ? resto[0].name : "Otras",
+      value: resto.reduce((suma, i) => suma + i.value, 0),
+      detalle: resto.length > 1 ? resto.map((i) => i.name).join(", ") : null,
+      esOtras: true,
+    },
+  ];
+}
 
 // Definido a nivel de módulo (no dentro de GraficoTorta): un componente creado
 // dentro de otro se recrea en cada render y pierde su estado.
@@ -25,7 +44,7 @@ const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <div style={{
-        background: "var(--card)",
+        background: "var(--bg-2)",
         border: "1px solid var(--border)",
         borderRadius: 8,
         padding: "10px 14px",
@@ -33,11 +52,17 @@ const CustomTooltip = ({ active, payload }) => {
         color: "var(--text)"
       }}>
         <p style={{ fontWeight: 700 }}>{payload[0].name}</p>
-        <p style={{ color: "var(--primary)" }}>
+        {/* El valor va en tinta de texto, no en el color de la serie */}
+        <p style={{ fontFamily: '"Space Grotesk", sans-serif', fontVariantNumeric: "tabular-nums" }}>
           ${payload[0].value.toLocaleString("es-AR", {
             minimumFractionDigits: 2
           })}
         </p>
+        {payload[0].payload.detalle && (
+          <p style={{ color: "var(--fg-3)", fontSize: "0.75rem" }}>
+            {payload[0].payload.detalle}
+          </p>
+        )}
       </div>
     );
   }
@@ -62,10 +87,9 @@ function GraficoTorta({ datos }) {
   }
 
   // Formatea los datos para Recharts
-  const datosFormateados = datos.map((item) => ({
-    name: item.categoria,
-    value: item.total,
-  }));
+  const datosFormateados = agruparCategorias(
+    datos.map((item) => ({ name: item.categoria, value: item.total }))
+  );
 
   return (
     <ResponsiveContainer width="100%" height={280}>
@@ -78,11 +102,13 @@ function GraficoTorta({ datos }) {
           outerRadius={100}
           paddingAngle={3}
           dataKey="value"
+          stroke="var(--bg-2)"   // separación con el color de la superficie, no el blanco por defecto
+          strokeWidth={2}
         >
-          {datosFormateados.map((_, index) => (
+          {datosFormateados.map((item, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={COLORES[index % COLORES.length]}
+              fill={item.esOtras ? COLOR_OTRAS : COLORES[index]}
             />
           ))}
         </Pie>
