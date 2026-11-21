@@ -462,7 +462,6 @@ a {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 1.5rem;
 }
 
 .asistente-titulo h2 { margin: 0; font-size: 1.2rem; }
@@ -491,7 +490,7 @@ a {
 
 .mensaje { display: flex; align-items: flex-end; gap: 0.6rem; }
 .mensaje-usuario { flex-direction: row-reverse; }
-.avatar-ia, .avatar-usuario { font-size: 1.3rem; flex-shrink: 0; }
+.avatar-ia, .avatar-usuario { display: flex; flex-shrink: 0; color: var(--fg-2); }
 
 .burbuja {
   max-width: 75%;
@@ -577,7 +576,8 @@ a {
   border-radius: 10px; border: none;
   background: var(--primary);
   color: #0f172a;
-  font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
   flex-shrink: 0;
   transition: opacity var(--transition);
 }
@@ -601,7 +601,6 @@ a {
   border: 1px solid var(--border);
   max-width: 380px;
 }
-.locked-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
 .locked-card h2 { margin: 0 0 0.75rem; }
 .locked-card p  { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.25rem; }
 .premium-badge {

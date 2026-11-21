@@ -5,6 +5,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import axios from 'axios'
+import { AvatarIA, AvatarUser, IcoSend } from '../components/Iconos'
 
 const API = import.meta.env.VITE_API_URL
 
@@ -76,14 +77,13 @@ export default function Asistente() {
     return (
       <div className="asistente-locked">
         <div className="locked-card">
-          <span className="locked-icon">🤖</span>
           <h2>Asistente IA</h2>
           <p>
             El Asistente IA está disponible exclusivamente para usuarios{' '}
             <strong>Premium</strong>. Activá tu plan para acceder a consejos
             financieros personalizados.
           </p>
-          <span className="premium-badge">✨ Premium</span>
+          <span className="premium-badge">Premium</span>
         </div>
       </div>
     )
@@ -94,7 +94,6 @@ export default function Asistente() {
       {/* Header */}
       <div className="asistente-header">
         <div className="asistente-titulo">
-          <span>🤖</span>
           <div>
             <h2>Asistente IA</h2>
             <p>Analizando tus finanzas con IA</p>
@@ -123,19 +122,19 @@ export default function Asistente() {
       <div className="asistente-chat">
         {mensajes.map((m, i) => (
           <div key={i} className={`mensaje mensaje-${m.rol}`}>
-            {m.rol === 'asistente' && <span className="avatar-ia">🤖</span>}
+            {m.rol === 'asistente' && <span className="avatar-ia"><AvatarIA /></span>}
             <div className={`burbuja burbuja-${m.rol}`}>
               {m.texto.split('\n').map((linea, j) => (
                 <p key={j}>{linea}</p>
               ))}
             </div>
-            {m.rol === 'usuario' && <span className="avatar-usuario">👤</span>}
+            {m.rol === 'usuario' && <span className="avatar-usuario"><AvatarUser /></span>}
           </div>
         ))}
 
         {cargando && (
           <div className="mensaje mensaje-asistente">
-            <span className="avatar-ia">🤖</span>
+            <span className="avatar-ia"><AvatarIA /></span>
             <div className="burbuja burbuja-asistente burbuja-cargando">
               <span className="dot" /><span className="dot" /><span className="dot" />
             </div>
@@ -172,7 +171,7 @@ export default function Asistente() {
           disabled={!input.trim() || cargando}
           className="btn-enviar"
         >
-          ➤
+          <IcoSend />
         </button>
       </div>
       <p className="asistente-hint">
