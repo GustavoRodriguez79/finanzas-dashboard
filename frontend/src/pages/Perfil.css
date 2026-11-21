@@ -99,10 +99,6 @@
   border-radius: var(--radio);
 }
 
-.perfil-stat-icono {
-  font-size: 1.5rem;
-}
-
 .perfil-stat-valor {
   font-size: 0.9rem;
   font-weight: 600;
@@ -162,13 +158,19 @@
 }
 
 .perfil-premium-activo {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--card-inner);
   color: var(--text);
   font-weight: 700;
+}
+
+.perfil-premium-activo svg {
+  color: var(--accent);
 }
 
 .perfil-premium .perfil-error {

@@ -5,6 +5,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { authService } from "../services/api";
+import { IcoCheck } from "../components/Iconos";
 import "./Perfil.css";
 
 // Días completos desde el registro. created_at llega en ISO 8601 desde el backend;
@@ -99,17 +100,14 @@ function Perfil() {
       {/* Estadísticas de uso */}
       <section className="perfil-stats">
         <div className="perfil-stat">
-          <span className="perfil-stat-icono">📅</span>
           <span className="perfil-stat-valor">{textoDias(diasDesde(usuario?.created_at))}</span>
         </div>
         <div className="perfil-stat">
-          <span className="perfil-stat-icono">💳</span>
           <span className="perfil-stat-valor">
             {valor(stats?.total_transacciones)} transacciones registradas
           </span>
         </div>
         <div className="perfil-stat">
-          <span className="perfil-stat-icono">💰</span>
           <span className="perfil-stat-valor">
             {valor(stats?.total_ingresos)} ingresos · {valor(stats?.total_gastos)} gastos
           </span>
@@ -122,22 +120,22 @@ function Perfil() {
       {/* Adelanto Premium: se muestra qué se obtendría, sin bloquear nada */}
       <section className="perfil-card perfil-premium">
         <div className="perfil-premium-header">
-          <h2>📧 Alertas por email</h2>
-          <span className="perfil-chip">✨ Premium</span>
+          <h2>Alertas por email</h2>
+          <span className="perfil-chip">Premium</span>
         </div>
         <p className="perfil-premium-texto">
           Recibí un resumen mensual automático con tus gastos, ahorros y
           proyecciones directo en tu email.
         </p>
         {usuario?.plan === "premium" ? (
-          <span className="perfil-premium-activo">✅ Plan Premium activo</span>
+          <span className="perfil-premium-activo"><IcoCheck />Plan Premium activo</span>
         ) : (
           <button
             className="perfil-btn-premium"
             onClick={handleActivarPremium}
             disabled={activando}
           >
-            {activando ? "Activando..." : "✨ Activar Premium (gratis en demo)"}
+            {activando ? "Activando..." : "Activar Premium (gratis en demo)"}
           </button>
         )}
         {errorPremium && <p className="perfil-error">{errorPremium}</p>}
