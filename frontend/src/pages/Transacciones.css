@@ -199,11 +199,13 @@
   background: var(--card);
   border-radius: var(--radio);
   border: 1px solid var(--border);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tabla {
   width: 100%;
+  min-width: 480px;
   border-collapse: collapse;
   font-size: 0.9rem;
 }
@@ -304,5 +306,16 @@
   .tabla th:nth-child(4),
   .tabla td:nth-child(4) {
     display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .tabla {
+    min-width: 360px;
+    font-size: 0.82rem;
+  }
+  .tabla th,
+  .tabla td {
+    padding: 10px;
   }
 }
