@@ -209,9 +209,11 @@ a {
   font-weight: 600;
 }
 .sidebar-icon {
-  font-size: 1.1rem;
   width: 22px;
-  text-align: center;
+  /* Flex y no text-align: el icono es un SVG, y centrado por línea base queda unos px corrido */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 .sidebar-label {

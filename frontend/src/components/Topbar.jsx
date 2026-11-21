@@ -1,5 +1,6 @@
 // components/Topbar.jsx
 import { useTheme } from "../context/ThemeContext";
+import { IcoSol, IcoLuna } from "./Iconos";
 
 export default function Topbar({ title, onMenuClick }) {
   const { theme, toggleTheme } = useTheme();
@@ -23,14 +24,14 @@ export default function Topbar({ title, onMenuClick }) {
             onClick={() => theme !== "dark" && toggleTheme()}
             title="Tema oscuro"
           >
-            🌙
+            <IcoLuna />
           </button>
           <button
             className={`theme-btn ${theme === "light" ? "active" : ""}`}
             onClick={() => theme !== "light" && toggleTheme()}
             title="Tema claro"
           >
-            ☀️
+            <IcoSol />
           </button>
         </div>
       </div>

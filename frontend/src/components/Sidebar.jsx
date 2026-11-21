@@ -2,17 +2,29 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../context/ThemeContext";
+import {
+  IcoDashboard,
+  IcoIngresos,
+  IcoGastos,
+  IcoPresupuesto,
+  IcoResumen,
+  IcoUSD,
+  IcoAsistente,
+  IcoSalir,
+  IcoSol,
+  IcoLuna,
+} from "./Iconos";
 
 // Las rutas coinciden con las de App.jsx (/dashboard y /resumen se mantienen).
 // Transacciones queda fuera hasta que exista la página.
 const NAV_ITEMS = [
-  { to: "/dashboard", icon: "📊", label: "Dashboard" },
-  { to: "/ingresos", icon: "💰", label: "Ingresos" },
-  { to: "/gastos", icon: "💸", label: "Gastos" },
-  { to: "/presupuesto", icon: "🎯", label: "Presupuesto" },
-  { to: "/resumen", icon: "📈", label: "Resumen Anual" },
-  { to: "/ahorros-usd", icon: "🇺🇸", label: "Ahorros USD" },
-  { to: "/asistente", icon: "🤖", label: "Asistente IA" },
+  { to: "/dashboard", icon: IcoDashboard, label: "Dashboard" },
+  { to: "/ingresos", icon: IcoIngresos, label: "Ingresos" },
+  { to: "/gastos", icon: IcoGastos, label: "Gastos" },
+  { to: "/presupuesto", icon: IcoPresupuesto, label: "Presupuesto" },
+  { to: "/resumen", icon: IcoResumen, label: "Resumen Anual" },
+  { to: "/ahorros-usd", icon: IcoUSD, label: "Ahorros USD" },
+  { to: "/asistente", icon: IcoAsistente, label: "Asistente IA" },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -46,14 +58,14 @@ export default function Sidebar({ isOpen, onClose }) {
 
       <aside className={`app-sidebar ${isOpen ? "open" : ""}`}>
         <div className="sidebar-logo">
-          <div className="sidebar-logo-text">💹 FinanzasApp</div>
+          <div className="sidebar-logo-text">FinanzasApp</div>
           <div className="sidebar-logo-sub">Panel de control</div>
         </div>
 
         <nav className="sidebar-nav">
           <div className="sidebar-section-label">Menú principal</div>
 
-          {NAV_ITEMS.map(({ to, icon, label }) => (
+          {NAV_ITEMS.map(({ to, icon: Icono, label }) => (
             <NavLink
               key={to}
               to={to}
@@ -62,7 +74,7 @@ export default function Sidebar({ isOpen, onClose }) {
               }
               onClick={onClose}
             >
-              <span className="sidebar-icon">{icon}</span>
+              <span className="sidebar-icon"><Icono /></span>
               <span className="sidebar-label">{label}</span>
             </NavLink>
           ))}
@@ -81,9 +93,16 @@ export default function Sidebar({ isOpen, onClose }) {
               }}
             >
               <span
-                style={{ fontSize: "0.82rem", color: "var(--text-secondary)" }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: "0.82rem",
+                  color: "var(--text-secondary)",
+                }}
               >
-                {theme === "dark" ? "🌙 Oscuro" : "☀️ Claro"}
+                {theme === "dark" ? <IcoLuna /> : <IcoSol />}
+                {theme === "dark" ? "Oscuro" : "Claro"}
               </span>
               <label className="toggle-switch">
                 <input
@@ -142,7 +161,7 @@ export default function Sidebar({ isOpen, onClose }) {
             onClick={handleLogout}
             style={{ color: "var(--danger)" }}
           >
-            <span className="sidebar-icon">🚪</span>
+            <span className="sidebar-icon"><IcoSalir /></span>
             <span className="sidebar-label">Cerrar sesión</span>
           </button>
         </div>
