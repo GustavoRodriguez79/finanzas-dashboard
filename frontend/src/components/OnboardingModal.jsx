@@ -57,7 +57,6 @@ function OnboardingModal({ onboarding }) {
       <div className="onboarding-modal">
         {celebrando ? (
           <div className="onboarding-final">
-            <span className="onboarding-final-icono">🎉</span>
             <h2>¡Tu dashboard está listo!</h2>
             <p>Ya tenés todo configurado. Ahora podés ver tus finanzas en un solo lugar.</p>
             <button className="onboarding-btn-primario" onClick={cerrarCelebracion}>

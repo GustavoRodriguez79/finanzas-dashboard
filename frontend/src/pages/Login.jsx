@@ -58,7 +58,7 @@ function Login() {
 
         {/* Header */}
         <div className="auth-header">
-          <h1>💹 Finanzas</h1>
+          <h1>Finanzas</h1>
           <p>Iniciá sesión para continuar</p>
         </div>
 

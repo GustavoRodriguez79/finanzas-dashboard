@@ -165,12 +165,6 @@
   padding: 12px 0;
 }
 
-.onboarding-final-icono {
-  display: block;
-  font-size: 3rem;
-  margin-bottom: 8px;
-}
-
 .onboarding-final p {
   margin: 8px 0 20px;
   color: var(--text-secondary);

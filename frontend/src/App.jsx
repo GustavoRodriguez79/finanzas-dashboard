@@ -43,7 +43,7 @@ const PAGE_TITLES = {
   "/gastos": "Gastos",
   "/presupuesto": "Presupuesto",
   "/resumen": "Resumen Anual",
-  "/ahorros-usd": "Ahorros USD 🇺🇸",
+  "/ahorros-usd": "Ahorros USD",
   "/perfil": "Perfil",
   
 };

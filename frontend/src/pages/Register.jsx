@@ -70,7 +70,7 @@ function Register() {
 
         {/* Header */}
         <div className="auth-header">
-          <h1>💹 Finanzas</h1>
+          <h1>Finanzas</h1>
           <p>Creá tu cuenta gratuita</p>
         </div>
 
