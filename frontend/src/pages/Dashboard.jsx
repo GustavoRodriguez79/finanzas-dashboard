@@ -11,6 +11,7 @@ import GraficoBarras from "../components/charts/GraficoBarras";
 import OnboardingModal from "../components/OnboardingModal";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { ANIOS_HISTORICOS } from "../utils/anios";
+import { Dot, IcoEye, IcoEyeOff } from "../components/Iconos";
 import "./Dashboard.css";
 
 const MESES_CORTOS = [
@@ -234,7 +235,7 @@ function Dashboard() {
       {/* Header con saludo y selector de período */}
       <div className="dashboard-header">
         <div>
-          <h1>Hola, {usuario?.nombre?.split(" ")[0]} 👋</h1>
+          <h1>Hola, {usuario?.nombre?.split(" ")[0]}</h1>
           <p className="dashboard-subtitle">
             Resumen financiero de {MESES[mes]} {anio}
           </p>
@@ -247,7 +248,7 @@ function Dashboard() {
             title={saldoVisible ? "Ocultar saldos" : "Mostrar saldos"}
             aria-label={saldoVisible ? "Ocultar saldos" : "Mostrar saldos"}
           >
-            {saldoVisible ? "👁️" : "🙈"}
+            {saldoVisible ? <IcoEye /> : <IcoEyeOff />}
           </button>
           <select
             value={mes}
@@ -270,8 +271,8 @@ function Dashboard() {
 
       {/* Cards de métricas principales */}
       <div className="dashboard-cards">
-        <div className="metric-card ingresos" data-icon="💰">
-          <span className="metric-label">💰 Ingresos</span>
+        <div className="metric-card ingresos">
+          <span className="metric-label"><Dot color="var(--accent)" />Ingresos</span>
           <span className="metric-valor c-green">
             {saldoVisible
               ? `$${resumen?.total_ingresos?.toLocaleString("es-AR", {
@@ -280,8 +281,8 @@ function Dashboard() {
               : "$ ••••••"}
           </span>
         </div>
-        <div className="metric-card gastos" data-icon="💸">
-          <span className="metric-label">💸 Gastos</span>
+        <div className="metric-card gastos">
+          <span className="metric-label"><Dot color="var(--red)" />Gastos</span>
           <span className="metric-valor c-red">
             {saldoVisible
               ? `$${resumen?.total_gastos?.toLocaleString("es-AR", {
@@ -292,9 +293,10 @@ function Dashboard() {
         </div>
         <div
           className={`metric-card balance ${resumen?.balance >= 0 ? "positivo" : "negativo"}`}
-          data-icon="⚖️"
         >
-          <span className="metric-label">⚖️ Balance</span>
+          <span className="metric-label">
+            <Dot color={resumen?.balance >= 0 ? "var(--blue)" : "var(--red)"} />Balance
+          </span>
           {/* Azul si el balance es positivo, rojo si es negativo: conserva la señal de alerta */}
           <span className={`metric-valor ${resumen?.balance >= 0 ? "c-blue" : "c-red"}`}>
             {saldoVisible
@@ -304,8 +306,8 @@ function Dashboard() {
               : "$ ••••••"}
           </span>
         </div>
-        <div className="metric-card ahorro" data-icon="🎯">
-          <span className="metric-label">🎯 Ahorro</span>
+        <div className="metric-card ahorro">
+          <span className="metric-label"><Dot color="var(--amber)" />Ahorro</span>
           <span className="metric-valor c-amber">
             {saldoVisible ? `${resumen?.porcentaje_ahorro}%` : "••••"}
           </span>
@@ -315,14 +317,14 @@ function Dashboard() {
       {/* Chip de racha: solo si hay al menos 1 día */}
       {racha > 0 && (
         <div className="dash-racha-chip">
-          🔥 Llevas {racha} {racha === 1 ? "día" : "días"} seguidos registrando tus gastos
+          Llevas {racha} {racha === 1 ? "día" : "días"} seguidos registrando tus gastos
         </div>
       )}
 
       {/* Progreso de TODAS las categorías con presupuesto en el mes */}
       {resumen?.presupuestos?.length > 0 && (
         <div className="dash-pres">
-          <h2>🎯 Presupuesto del mes</h2>
+          <h2>Presupuesto del mes</h2>
           <div className="dash-pres-lista">
             {resumen.presupuestos.map((p) => {
               const color = colorProgreso(p.porcentaje);
@@ -376,7 +378,7 @@ function Dashboard() {
       {/* Proyección y categoría top */}
       <div className="dashboard-extra">
         <div className="extra-card">
-          <span className="extra-label">📈 Proyección del mes</span>
+          <span className="extra-label">Proyección del mes</span>
           <span className="extra-valor">
             ${resumen?.proyeccion_gasto_mes?.toLocaleString("es-AR", {
               minimumFractionDigits: 2
@@ -384,7 +386,7 @@ function Dashboard() {
           </span>
         </div>
         <div className="extra-card">
-          <span className="extra-label">🏆 Categoría top</span>
+          <span className="extra-label">Categoría top</span>
           <span className="extra-valor">
             {resumen?.categoria_top?.categoria}
           </span>
@@ -399,7 +401,7 @@ function Dashboard() {
       {/* Adelanto Premium: preview borrosa de un insight de ejemplo, sin muro de pago */}
       <div className="dash-premium-insight">
         <div className="dash-premium-header">
-          <span className="dash-premium-titulo">✨ Insight de la semana</span>
+          <span className="dash-premium-titulo">Insight de la semana</span>
           <span className="dash-premium-chip">Premium</span>
         </div>
         {/* aria-hidden: es texto de ejemplo, no debe leerlo un lector de pantalla */}
