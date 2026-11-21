@@ -1,6 +1,6 @@
 // Generado con `railway config migrate --apply` a partir de railway.toml.
-// TODAVÍA NO ESTÁ EN USO: Railway sigue leyendo railway.toml hasta que se ejecute
-// `railway config migrate cutover`. Antes de eso, revisar con `railway config plan`:
+// Esta configuración está aplicada y en uso desde el 21 de noviembre de 2026.
+// Se aplica con `railway config apply`. Diferencias respecto de railway.toml:
 //  - Se quitó `commitSha` (fijaba el commit viejo 1fce96a) para que el servicio
 //    siga la rama `main` y no despliegue siempre ese commit.
 import { defineRailway, github, project, service } from "railway/iac";
