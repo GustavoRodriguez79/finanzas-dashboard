@@ -8,6 +8,7 @@ import { resumenService } from "../services/api";
 import GraficoBarras from "../components/charts/GraficoBarras";
 import GraficoTorta from "../components/charts/GraficoTorta";
 import EstadoVacio from "../components/EstadoVacio";
+import { Dot } from "../components/Iconos";
 import { ANIOS_HISTORICOS } from "../utils/anios";
 import "./ResumenAnual.css";
 
@@ -98,7 +99,7 @@ function ResumenAnual() {
       {/* Header */}
       <div className="resumen-header">
         <div>
-          <h1>📅 Resumen Anual</h1>
+          <h1>Resumen Anual</h1>
           <p className="resumen-subtitle">
             Balance financiero completo del año {anio}
           </p>
@@ -116,7 +117,6 @@ function ResumenAnual() {
 
       {sinDatos ? (
         <EstadoVacio
-          icono="📈"
           texto="Registrá movimientos durante el año y verás tu evolución financiera aquí"
         />
       ) : (
@@ -124,7 +124,7 @@ function ResumenAnual() {
       {/* Cards totales anuales */}
       <div className="resumen-totales">
         <div className="total-card ingresos">
-          <span className="total-label">💰 Ingresos totales</span>
+          <span className="total-label"><Dot color="var(--accent)" />Ingresos totales</span>
           <span className="total-valor">
             ${resumen?.total_ingresos?.toLocaleString("es-AR", {
               minimumFractionDigits: 2
@@ -132,7 +132,7 @@ function ResumenAnual() {
           </span>
         </div>
         <div className="total-card gastos">
-          <span className="total-label">💸 Gastos totales</span>
+          <span className="total-label"><Dot color="var(--red)" />Gastos totales</span>
           <span className="total-valor">
             ${resumen?.total_gastos?.toLocaleString("es-AR", {
               minimumFractionDigits: 2
@@ -140,7 +140,9 @@ function ResumenAnual() {
           </span>
         </div>
         <div className={`total-card balance ${resumen?.balance_anual >= 0 ? "positivo" : "negativo"}`}>
-          <span className="total-label">⚖️ Balance anual</span>
+          <span className="total-label">
+            <Dot color={resumen?.balance_anual >= 0 ? "var(--blue)" : "var(--red)"} />Balance anual
+          </span>
           <span className="total-valor">
             ${resumen?.balance_anual?.toLocaleString("es-AR", {
               minimumFractionDigits: 2
@@ -148,7 +150,7 @@ function ResumenAnual() {
           </span>
         </div>
         <div className="total-card ahorro">
-          <span className="total-label">🎯 Ahorro anual</span>
+          <span className="total-label"><Dot color="var(--amber)" />Ahorro anual</span>
           <span className="total-valor">
             {resumen?.porcentaje_ahorro_anual}%
           </span>
@@ -158,7 +160,7 @@ function ResumenAnual() {
       {/* Mes más caro y más económico */}
       <div className="resumen-destacados">
         <div className="destacado-card caro">
-          <span className="destacado-label">📈 Mes más caro</span>
+          <span className="destacado-label"><Dot color="var(--red)" />Mes más caro</span>
           <span className="destacado-mes">
             {resumen?.mes_mas_caro
               ? MESES[resumen.mes_mas_caro.mes]
@@ -173,7 +175,7 @@ function ResumenAnual() {
           )}
         </div>
         <div className="destacado-card economico">
-          <span className="destacado-label">📉 Mes más económico</span>
+          <span className="destacado-label"><Dot color="var(--accent)" />Mes más económico</span>
           <span className="destacado-mes">
             {resumen?.mes_mas_economico
               ? MESES[resumen.mes_mas_economico.mes]
