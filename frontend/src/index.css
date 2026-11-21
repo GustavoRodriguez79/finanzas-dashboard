@@ -12,14 +12,14 @@
 ═══════════════════════════════════════ */
 :root {
   /* Tokens nuevos del rediseño */
-  --bg: #0f1117;
-  --bg-2: #161b27;
-  --bg-3: #1c2235;
+  --bg: #0e0e10;
+  --bg-2: #151517;
+  --bg-3: #1d1d20;
   --border: rgba(255, 255, 255, 0.07);
 
   --fg: #e8eaf0;
-  --fg-2: #8891a8;
-  --fg-3: #555e75;
+  --fg-2: #9a9ca3;
+  --fg-3: #6a6c73;
 
   /* Semánticos: el color va solo en el número, nunca en el fondo de la card */
   --accent: #10b981;
@@ -70,9 +70,9 @@
 /* Solo por data-theme: el toggle de ThemeContext es la única fuente del tema.
    No se usa prefers-color-scheme porque ThemeContext deja data-theme="" en oscuro */
 :root[data-theme="light"] {
-  --bg: #f5f6fa;
-  --bg-2: #ffffff;
-  --bg-3: #eef0f6;
+  --bg: #fdfdfd;
+  --bg-2: #f7f7f7;
+  --bg-3: #eeeeee;
   --border: rgba(0, 0, 0, 0.08);
   --fg: #111827;
   --fg-2: #4b5563;
