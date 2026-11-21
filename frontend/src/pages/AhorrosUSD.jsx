@@ -1,14 +1,17 @@
 // pages/AhorrosUSD.jsx
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { IcoEye, IcoEyeOff, IcoEdit, IcoTrash, IcoDeposito, IcoRetiro, IcoAjuste } from "../components/Iconos";
 import "./AhorrosUSD.css";
 
 const TIPOS = ["depósito", "retiro", "ajuste"];
 
 const TIPO_LABEL = {
-  depósito: { icon: "➕", color: "var(--success)", label: "Depósito" },
-  retiro: { icon: "➖", color: "var(--danger)", label: "Retiro" },
-  ajuste: { icon: "🔄", color: "var(--warning)", label: "Ajuste" },
+  // El icono es un elemento (no un componente): se usa tal cual en el selector del formulario
+  // y en cada movimiento de la lista
+  depósito: { icon: <IcoDeposito />, color: "var(--success)", label: "Depósito" },
+  retiro: { icon: <IcoRetiro />, color: "var(--danger)", label: "Retiro" },
+  ajuste: { icon: <IcoAjuste />, color: "var(--warning)", label: "Ajuste" },
 };
 
 const fmtUSD = (n) =>
@@ -199,7 +202,7 @@ export default function AhorrosUSD() {
               title={saldoUSDVisible ? "Ocultar saldo" : "Mostrar saldo"}
               aria-label={saldoUSDVisible ? "Ocultar saldo" : "Mostrar saldo"}
             >
-              {saldoUSDVisible ? "👁️" : "🙈"}
+              {saldoUSDVisible ? <IcoEye /> : <IcoEyeOff />}
             </button>
           </div>
           <div className={`usd-balance-valor ${balance < 0 ? "negativo" : ""}`}>
@@ -236,7 +239,6 @@ export default function AhorrosUSD() {
             </div>
           </div>
           <div className="usd-stat">
-            <span className="usd-stat-icon">📋</span>
             <div>
               <div className="usd-stat-label">Movimientos</div>
               <div className="usd-stat-valor">{movimientos.length}</div>
@@ -397,7 +399,6 @@ export default function AhorrosUSD() {
 
       {movFiltrados.length === 0 ? (
         <div className="usd-empty">
-          <span style={{ fontSize: "2.5rem" }}>💵</span>
           <p>
             {filtroTipo === "todos"
               ? "¡Todavía no registraste movimientos. Empezá agregando tu primer ahorro!"
@@ -412,7 +413,7 @@ export default function AhorrosUSD() {
               <div key={mov.id} className="usd-mov-item">
                 <div
                   className="usd-mov-icon"
-                  style={{ background: `${info.color}18`, color: info.color }}
+                  style={{ color: info.color }}
                 >
                   {info.icon}
                 </div>
@@ -435,14 +436,14 @@ export default function AhorrosUSD() {
                     title="Editar"
                     onClick={() => abrirEditar(mov)}
                   >
-                    ✏️
+                    <IcoEdit />
                   </button>
                   <button
                     className="btn-icon btn-icon-danger"
                     title="Eliminar"
                     onClick={() => setConfirmDelete(mov.id)}
                   >
-                    🗑️
+                    <IcoTrash />
                   </button>
                 </div>
               </div>

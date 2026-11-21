@@ -122,14 +122,16 @@ export const AvatarUser = () => (
 );
 
 // ─── Tipos de movimiento en Ahorros USD (14×14) ───
+// Depósito apunta hacia arriba y Retiro hacia abajo, igual que "Total depósitos ↑" / "Total retiros ↓"
+// de la card de balance y que Ingresos / Gastos del sidebar (la lista original los tenía al revés)
 export const IcoDeposito = () => (
   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M7 2v10M3 8l4 4 4-4"/>
+    <path d="M7 12V2M3 6l4-4 4 4"/>
   </svg>
 );
 export const IcoRetiro = () => (
   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M7 12V2M3 6l4-4 4 4"/>
+    <path d="M7 2v10M3 8l4 4 4-4"/>
   </svg>
 );
 export const IcoAjuste = () => (

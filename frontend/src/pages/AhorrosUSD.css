@@ -96,14 +96,16 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   margin-left: 10px;
-  padding: 2px 8px;
-  font-size: 1rem;
-  line-height: 1.4;
+  padding: 3px 8px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--fg-2);
   cursor: pointer;
   vertical-align: middle;
 }
 .usd-eye-toggle:hover {
   border-color: var(--fg-3);
+  color: var(--text);
 }
 
 .usd-balance-valor {
@@ -207,7 +209,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
   flex-shrink: 0;
   background: var(--bg-3);
 }
@@ -263,14 +264,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  color: var(--fg-2);
   transition: var(--transition);
 }
 .btn-icon:hover {
   background: var(--bg-secondary);
+  color: var(--text);
 }
 .btn-icon-danger:hover {
   background: var(--red-bg);
+  color: var(--red);
 }
 
 .usd-empty {
@@ -415,7 +418,10 @@
   font-weight: 600;
   transition: var(--transition);
   flex: 1;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 .tipo-btn:hover {
   border-color: var(--primary);
