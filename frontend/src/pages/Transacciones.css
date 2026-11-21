@@ -246,6 +246,12 @@
   font-weight: 600;
 }
 
+/* Check de "recurrente" en la tabla de ingresos */
+.recurrente-check {
+  display: inline-flex;
+  color: var(--accent);
+}
+
 .badge-ingreso {
   background: var(--bg);
   color: var(--success);

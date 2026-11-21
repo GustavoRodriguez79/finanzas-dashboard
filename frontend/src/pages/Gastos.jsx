@@ -190,7 +190,7 @@ function Gastos() {
       {/* Header */}
       <div className="page-header">
         <div>
-          <h1>💸 Gastos</h1>
+          <h1>Gastos</h1>
           <p className="page-subtitle">
             {MESES[filtroMes]} {filtroAnio} —{" "}
             <strong style={{ color: "var(--danger)" }}>
@@ -232,15 +232,15 @@ function Gastos() {
           onClick={handleExportarCSV}
           disabled={cargando || gastos.length === 0}
         >
-          📥 Exportar CSV
+          Exportar CSV
         </button>
         <button
           className="gastos-btn-premium"
           onClick={handleExportarPDF}
           disabled={generandoPdf}
         >
-          {generandoPdf ? "Generando..." : "📄 Exportar PDF"}{" "}
-          {!esPremium && <span className="gastos-premium-chip">✨ Premium</span>}
+          {generandoPdf ? "Generando..." : "Exportar PDF"}{" "}
+          {!esPremium && <span className="gastos-premium-chip">Premium</span>}
         </button>
       </div>
 
@@ -338,7 +338,6 @@ function Gastos() {
           </div>
         ) : (
           <EstadoVacio
-            icono="📊"
             texto="Registrá tu primer gasto y empezá a ver tus patrones de consumo"
             textoBoton={mostrarForm ? undefined : "+ Nuevo gasto"}
             onClick={() => setMostrarForm(true)}
@@ -394,7 +393,6 @@ function Gastos() {
             onClick={(e) => e.stopPropagation()}
           >
             <button className="gastos-modal-cerrar" onClick={() => setMostrarModalPdf(false)} aria-label="Cerrar">✕</button>
-            <div className="gastos-modal-icono">📄</div>
             <h3>Exportar reporte PDF</h3>
             <p>Con Premium podés exportar un reporte completo en PDF con tus gastos, gráficos y resumen mensual.</p>
             <div className="gastos-modal-preview">
@@ -411,7 +409,7 @@ function Gastos() {
               onClick={handleActivarDesdeModal}
               disabled={activandoDesdeModal}
             >
-              {activandoDesdeModal ? "Activando..." : "✨ Activar Premium (gratis en demo)"}
+              {activandoDesdeModal ? "Activando..." : "Activar Premium (gratis en demo)"}
             </button>
           </div>
         </div>

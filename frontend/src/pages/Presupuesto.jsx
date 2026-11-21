@@ -6,6 +6,7 @@
 import { useState, useEffect } from "react";
 import { presupuestoService } from "../services/api";
 import EstadoVacio from "../components/EstadoVacio";
+import { IcoWarning } from "../components/Iconos";
 import { ANIOS_CON_PROXIMO } from "../utils/anios";
 import "./Transacciones.css";
 import "./Presupuesto.css";
@@ -122,7 +123,7 @@ function Presupuesto() {
       {/* Header */}
       <div className="page-header">
         <div>
-          <h1>🎯 Presupuesto</h1>
+          <h1>Presupuesto</h1>
           <p className="page-subtitle">
             {MESES[filtroMes]} {filtroAnio} — Límites de gasto por categoría
           </p>
@@ -218,7 +219,6 @@ function Presupuesto() {
         <div className="tabla-loading">Cargando...</div>
       ) : presupuestos.length === 0 ? (
         <EstadoVacio
-          icono="🎯"
           texto="Definí un límite mensual y tomá el control de tus finanzas"
           textoBoton={mostrarForm ? undefined : "+ Nuevo presupuesto"}
           onClick={() => setMostrarForm(true)}
@@ -276,7 +276,8 @@ function Presupuesto() {
               {/* Alerta */}
               {p.alerta && (
                 <div className="presupuesto-alerta">
-                  {p.superado ? "🚨 Límite superado" : "⚠️ 80% alcanzado"}
+                  <IcoWarning />
+                  {p.superado ? "Límite superado" : "80% alcanzado"}
                 </div>
               )}
 

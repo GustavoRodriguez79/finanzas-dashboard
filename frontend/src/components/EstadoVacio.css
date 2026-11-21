@@ -14,11 +14,6 @@
   border-radius: var(--radio);
 }
 
-.estado-vacio-icono {
-  font-size: 3.5rem;
-  line-height: 1;
-}
-
 .estado-vacio-texto {
   margin: 0;
   max-width: 420px;

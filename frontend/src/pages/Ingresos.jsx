@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { ingresosService } from "../services/api";
+import { IcoCheck } from "../components/Iconos";
 import "./Transacciones.css";
 import { descargarCSV } from "../utils/exportarCSV";
 import { ANIOS_HISTORICOS } from "../utils/anios";
@@ -136,7 +137,7 @@ function Ingresos() {
       {/* Header */}
       <div className="page-header">
         <div>
-          <h1>💰 Ingresos</h1>
+          <h1>Ingresos</h1>
           <p className="page-subtitle">
             {MESES[filtroMes]} {filtroAnio} —{" "}
             <strong style={{ color: "var(--success)" }}>
@@ -169,7 +170,7 @@ function Ingresos() {
           onClick={handleExportarCSV}
           disabled={cargando || ingresos.length === 0}
         >
-          📥 Exportar CSV
+          Exportar CSV
         </button>
       </div>
 
@@ -269,7 +270,7 @@ function Ingresos() {
                   <td>
                     <span className="badge badge-ingreso">{ingreso.categoria}</span>
                   </td>
-                  <td>{ingreso.recurrente ? "✅" : "-"}</td>
+                  <td>{ingreso.recurrente ? <span className="recurrente-check"><IcoCheck /></span> : "-"}</td>
                   <td className="monto-positivo">
                     ${ingreso.monto.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
                   </td>
