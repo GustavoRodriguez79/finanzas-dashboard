@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Oscuro por defecto; el script evita el destello del tema equivocado antes de que cargue React -->
+    <meta name="color-scheme" content="dark" />
+    <script>
+      try {
+        if (localStorage.getItem("theme") === "light") {
+          document.querySelector('meta[name="color-scheme"]').content = "light";
+        }
+      } catch {
+        /* localStorage bloqueado: queda el default oscuro */
+      }
+    </script>
     <!-- Tri-stack tipográfico: texto (Jakarta), números/títulos (Space Grotesk), etiquetas (JetBrains Mono) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
     <title>frontend</title>

@@ -11,6 +11,7 @@
    TEMA OSCURO (default)
 ═══════════════════════════════════════ */
 :root {
+  color-scheme: dark;
   /* Tokens nuevos del rediseño */
   --bg: #0e0e10;
   --bg-2: #151517;
@@ -70,6 +71,7 @@
 /* Solo por data-theme: el toggle de ThemeContext es la única fuente del tema.
    No se usa prefers-color-scheme porque ThemeContext deja data-theme="" en oscuro */
 :root[data-theme="light"] {
+  color-scheme: light;
   --bg: #fdfdfd;
   --bg-2: #f7f7f7;
   --bg-3: #eeeeee;

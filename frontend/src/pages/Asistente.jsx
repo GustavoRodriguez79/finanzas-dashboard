@@ -68,6 +68,9 @@ export default function Asistente() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
+      // Durante la composición IME el Enter confirma el texto, no envía el mensaje
+      // (keyCode 229 cubre Safari, donde isComposing ya vino en false)
+      if (e.nativeEvent.isComposing || e.keyCode === 229) return
       enviar()
     }
   }

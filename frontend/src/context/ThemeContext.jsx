@@ -13,6 +13,10 @@ export function ThemeProvider({ children }) {
       "data-theme",
       theme === "light" ? "light" : "",
     );
+    // El meta avisa al navegador del esquema, así barras de scroll, selects e inputs nativos siguen el tema
+    document
+      .querySelector('meta[name="color-scheme"]')
+      ?.setAttribute("content", theme === "light" ? "light" : "dark");
     localStorage.setItem("theme", theme);
   }, [theme]);
 
